@@ -4,7 +4,15 @@ Open [COMMAND.md](COMMAND.md) for the team plan, [PREPARATION.md](PREPARATION.md
 
 ## Run
 
-Backend (Python 3.10+):
+Backend (Python 3.10+), PowerShell:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python -m pip install -r backend/requirements.txt
+.\.venv\Scripts\python backend/app.py
+```
+
+On macOS/Linux:
 
 ```bash
 python3 -m venv .venv

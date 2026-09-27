@@ -1,10 +1,10 @@
 # Tectonic — team command sheet
 
-Updated: 27 September 2026. This is the single working document for preparation and the event. Replace assumptions when the actual brief arrives.
+Updated: 27 September 2026. This is the team working agreement. The challenge, data, API contract, architecture, and product scope are decided after the real brief arrives.
 
 ## Goal and working rule
 
-When the brief arrives, the three of us choose the smallest useful MVP together. It should solve one concrete user problem, show a meaningful capability beyond a single answer, and produce a visible result. Start with one end-to-end slice and deepen it only if time allows. The current mock banking assistant is a test bed; the challenge brief determines the product.
+We arrive knowing how to build together within the four-hour working window. We do not arrive with a chosen solution, database schema, dataset, API contract, or architecture. The existing UI and API are only a generic connectivity check. Once we know the brief, all three choose the smallest useful MVP that solves one concrete user problem and produces a visible result.
 
 **One sentence pitch:** [Fill in when the challenge is announced.]
 
@@ -12,7 +12,7 @@ When the brief arrives, the three of us choose the smallest useful MVP together.
 
 **Demo path (three steps):** 1. [input] 2. [intelligence] 3. [visible result]
 
-**Cut line:** The demo still works with mock data and a deterministic response. A live model, real banking data, voice, and advanced hosting are optional integrations.
+**Cut line:** [The smallest useful result we can demonstrate for the actual challenge.]
 
 **Essential for this brief:** [Agree together after reading the challenge.]
 
@@ -25,56 +25,45 @@ When the brief arrives, the three of us choose the smallest useful MVP together.
 | Owner | Responsibility | First deliverable |
 | --- | --- | --- |
 | Mathieu | Facilitate the first ideation discussion, watch the clock, bring useful methods and the global view, draft whole-demo acceptance criteria and scenarios, and coordinate integration | Run a brief check-in every 25 minutes; record the shared MVP decision and the next integration check |
-| Diana | Frontend, live demo, and pitch story | Render the semantic response blocks; write and rehearse the pitch |
-| Damiens | Backend API and integration architecture | Keep `/api/ask` contract stable and provide a working mock response |
+| Diana | Frontend, live demo, pitch story, and lead for shared documents and repository coordination | Keep the shared docs and `main` coherent; agree on the MVP interface with Damiens |
+| Damiens | Backend and integration architecture after MVP selection | Agree with Diana on the challenge-specific interface; keep the backend runnable |
 
 Use one owner per area. Anyone can propose a change; the API owner confirms contract changes before the frontend and backend branches diverge.
 
 All three decide the MVP and what is essential versus optional. Keep discussions open and respectful; a check-in should surface concerns and help the team make the next decision, not turn into a status ceremony.
 
-## First 75 minutes after the brief
+If someone finishes early, they help with the current blocker, integration, testing, or the demo. Agree on the backup for each critical task at the first check-in. Diana leads the shared documents and repository while working remotely; branch ownership and merges are coordinated through GitHub.
+
+## Four-hour working plan
+
+Use this as a flexible budget from the moment the challenge is released. Confirm the actual deadline, pitch slot, and rules first. Mathieu facilitates a short check-in about every 25 minutes; the team changes the plan together when needed.
 
 | Time | Team action | Exit check |
 | --- | --- | --- |
-| 0–15 min | Read the brief and judging criteria. Define one user, problem, and existing KBC process to improve. Mathieu facilitates and tracks time. | Everyone can repeat the same goal. |
-| 15–30 min | Generate at most three ideas with [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md); all three choose the smallest useful MVP. Diana writes the pitch and three-step demo path. | Shared choice, essentials, optional work, cut line, and fallback are recorded. |
-| 30–40 min | Damiens and Diana agree on request/response JSON. Pick a mock dataset and one useful tool. | One sample request and response committed. |
-| 40–55 min | Build independently against that contract. Diana prepares a 90-second narrative; Mathieu drafts whole-demo acceptance criteria and test scenarios. | UI and API each run locally; the demo checks are written down. |
-| 55–75 min | Connect UI to API; run the full demo once. | A working vertical slice on `main`. |
+| 0–20 min | Read the brief; identify problem, user, data, constraints, AI role, decision or action, value, and judging criteria. Ask for clarification where needed. | Everyone can state the same problem. |
+| 20–40 min | Generate a few options; all three select the smallest useful MVP and mark essential versus optional. | One user journey, success criterion, cut line, and demo path. |
+| 40–60 min | Diana and Damiens agree on the interface and a sample JSON exchange for this MVP. Choose the simplest architecture and integration boundary. | Both can build independently against the same example. |
+| 60–150 min | Build the smallest end-to-end path, integrate early, and cut optional work when needed. Mathieu drafts whole-demo checks. | A visible UI → backend → result path runs. |
+| 150–195 min | Run acceptance scenarios, fix integration issues, and check the fallback. | The main demo path and one failure path work. |
+| 195–240 min | Freeze features, rehearse Diana's pitch, answer likely jury questions, and submit. | The exact demo and submission path have been run. |
 
-After that: make a quick team check-in every 25 minutes, improve the core idea, deploy when stable, rehearse, then keep a final buffer. The team cuts optional work when integration slips.
+The timeboxes are prompts to make decisions, not deadlines for perfect code. Keep a protected final buffer for testing and the demo.
 
-## Interface contract v0
+## Technical preparation and integration
 
-`POST /api/ask` with `{"message":"What changed in my spending?","user_id":"demo"}` returns:
+Before the event, each person makes the current generic starter run locally. The existing `/api/ask` route and mock response prove only that a React frontend can call a Flask backend. They are not the future product contract. A fallback may be a fixed response matching the **chosen** MVP's interface, created after the brief so frontend and backend can work independently.
 
-```json
-{
-  "answer": "Your spending is up in groceries this month.",
-  "blocks": [
-    {"type":"metric","label":"Groceries","value":"€420","detail":"+€60 vs previous month"},
-    {"type":"list","title":"Possible next steps","items":["Review recent grocery purchases","Set a monthly alert"]}
-  ],
-  "source": "mock"
-}
-```
+Agree on a few conventions now: JSON over HTTP for the local UI/backend boundary; one concrete request and response example after MVP selection; explicit errors and loading states; names that match the chosen domain; server-side credentials in local `.env` only; and a short integration check after every merge. Keep `.env.example` to variable names and placeholders.
 
-`blocks` is a small semantic UI vocabulary: `text`, `metric`, and `list`. Add a new type only with a sample JSON response and a UI renderer. The server validates input; the UI treats all response text as untrusted. This v0 contract only proves the UI/API connection; it is not the intended final assistant design. Never put API keys in the browser or commit them.
+Choose tools from the actual need and event permissions. Retrieval, calculation, model calls, or external APIs are options, not a preparation checklist to implement. For each selected tool, record its input, output, failure behavior, and what the demo will show. Never put API keys in the browser or commit them.
 
-### Interface v1 preparation to-do
+## Testing, trusted AI, and demo
 
-Use an invented brief and mock data for these tasks. Adapt the data and tools when the real challenge is announced.
+Mathieu drafts whole-demo acceptance criteria as the team builds; all three review and run them. Test the main user journey, invalid or missing input, a tool/model failure if applicable, and the fallback. Check what evidence supports each important claim in the demo.
 
-| Area | Preparation task | Done when |
-| --- | --- | --- |
-| Context | Decide what one request carries: current message, session ID, recent turns, and any allowed user or task context. Define a reset and a size limit. | Two related questions work in sequence, and a reset removes prior context. |
-| Tools | Define a small tool registry with typed inputs and outputs, permissions, timeouts, and failure responses. Implement one read-only mock tool. | A request can call the tool, show what it used, and recover from a tool error. |
-| RAG | Build a tiny local document set and retrieval path: chunk, index, search, and return source IDs or excerpts. | The assistant answers a document question with a source reference and says when the documents do not support an answer. |
-| Response contract | Agree on a v1 JSON example for answer, UI blocks, source references, tool activity, and errors. Keep the same shape for mock and model-backed responses. | Frontend and backend can work independently from the same examples. |
-| Orchestration | Decide when to use conversation context, retrieval, or a tool. Keep a deterministic mock path so the demo works without a model or network. | One end-to-end example uses context, one uses retrieval, and one uses a tool. |
-| Evaluation | Prepare a small set of checks for follow-up questions, grounded answers, tool failure, missing evidence, and invalid input. | The team can run the same checks after each integration. |
+Before showing anything as trusted AI, ask: Are we using allowed data? Are claims grounded or clearly uncertain? Are consequential actions approved by the user? Are secrets kept private? Can a person review or stop the action? Does the system show what happened when a tool fails? Apply the checks that fit the released challenge.
 
-Confirm the event's rules and available data before connecting any real service or changing the v1 examples to fit the challenge.
+Diana's pitch follows **problem → why this approach → live three-step demo → user value → limitation or next step**. Prepare short answers to likely jury questions: why this problem, what is new, where the data came from, what works live, how safety is handled, and what would be needed in production.
 
 ## Repository workflow
 
@@ -82,11 +71,11 @@ Confirm the event's rules and available data before connecting any real service 
 main             always demoable
 feat/frontend    Diana's UI changes
 feat/backend     API and data changes
-feat/product     Mathieu's scope or orchestration notes
+feat/product     Mathieu's acceptance checks or discussion notes
 feat/pitch       Diana's pitch story
 ```
 
-We will not use pull requests. Each owner pulls the latest `main`, works on their own branch, makes small commits, and pushes that branch. Mathieu (or a named integrator) merges one branch at a time into `main` locally, runs the full demo check, then pushes `main`. Everyone pulls `main` again after a merge. Avoid simultaneous edits to the same file and do not force-push shared branches.
+We will not use pull requests. Each owner pulls the latest `main`, works on their own branch, makes small commits, and pushes that branch. Diana coordinates repository changes and names the integrator for each merge. The integrator merges one branch at a time into `main` locally, runs the full demo check, then pushes `main`. Everyone pulls `main` again after a merge. Avoid simultaneous edits to the same file and do not force-push shared branches.
 
 ```bash
 git switch main
@@ -115,9 +104,10 @@ Before the event: each person clones the shared remote, runs both services, send
 - [x] Publish the starter on `main`
 - [ ] Each teammate clones, runs both services, and pushes their own branch
 - [ ] Confirm challenge rules, allowed tools/data, presentation time, and submission format from the organizer
-- [ ] Complete the interface v1 preparation tasks above with mock data
-- [ ] Choose model/provider and deployment only after available credentials and event constraints are known
-- [ ] Practice a timed 75-minute trial with one invented prompt from [IDEAS.md](IDEAS.md)
+- [ ] Agree on Git ownership, backups, JSON/error conventions, and the integration check
+- [ ] Review the trusted AI questions, acceptance-criteria template, and demo outline above
+- [ ] Decide model/provider, data, architecture, and deployment only after the brief and event constraints are known
+- [ ] Walk through [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md) together without committing to an invented solution
 
 ## Day-of log
 
@@ -129,6 +119,6 @@ Before the event: each person clones the shared remote, runs both services, send
 
 **Next three actions:** 1. [owner + action] 2. [owner + action] 3. [owner + action]
 
-**Risks and fallback:** [What could break; how the mock slice still demonstrates the idea.]
+**Risks and fallback:** [What could break; what fallback proves the chosen MVP's useful result.]
 
 **Pitch (Diana):** [Problem → insight → working demo → measurable benefit.]

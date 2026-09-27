@@ -1,6 +1,6 @@
 # Global view — Kate 3.0 rehearsal ideas
 
-Working hypotheses for the KBC track, 27 September 2026. The challenge is still hidden. These are reusable directions for a timed rehearsal, not predictions of what KBC will ask. Use the actual brief and judging criteria to choose or discard them. [PREPARATION.md](PREPARATION.md) records Diana's KBC sources and the ten innovation lenses; [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md) is the day-of decision board.
+Working hypotheses for the KBC track, 27 September 2026. The challenge is still hidden. These are discussion prompts, not predictions, selected solutions, or tasks to build before the event. Use the actual brief and judging criteria to choose or discard them. [PREPARATION.md](PREPARATION.md) records Diana's KBC sources and the ten innovation lenses; [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md) is the day-of decision board.
 
 ## What would feel like a capability leap?
 
@@ -17,17 +17,17 @@ Working hypotheses for the KBC track, 27 September 2026. The challenge is still 
 | **Customer rule composer** | Customers repeat the same preferences and checks. Kate turns a plain-language goal into a transparent, editable rule with a test run and an approval gate. | Customer says “warn me if this bill rises”; show generated rule, simulated trigger, editable threshold, and a mock alert. | Programmability, memory, detection, control. |
 | **Cross-service journey coordinator** | A multi-step goal spans banking, insurance, and outside services. Kate builds a plan, calls mock tools, tracks dependencies, and verifies completion after each approved step. | Select a home move; show a three-step plan, one mock tool result, a blocked dependency, and a revised next step. | Orchestration, system coordination, knowledge, verification. |
 
-## Rehearsal choices
+## Optional discussion prompts
 
-These three exercises cover different technical risks. Pick **one** for a timed rehearsal; keep the other two as alternative briefs.
+These three invented briefs can be used to walk through the decision method without implementing a solution.
 
-| Invented brief | Why rehearse it | One proof to build first |
+| Invented brief | What the team would discuss | Possible proof if a real brief called for it |
 | --- | --- | --- |
 | “Help customers decide what to do when they may buy a home.” | Tests intent, context, trade-offs, and an approved next action. | A scenario calculation whose output changes with an input. |
 | “Make Kate's answers more trustworthy.” | Tests retrieval, source handling, uncertainty, and escalation. | One grounded answer and one explicit “insufficient evidence” result. |
 | “Reduce customer onboarding delays caused by inconsistent documents.” | Tests extraction, a simple knowledge model, workflow, and review. | A contradiction detected across two mock records with provenance. |
 
-For any choice, write one observable customer benefit and the three demo steps before building. Use synthetic data. Keep consequential actions as customer-approved mock actions. A live provider is optional for the rehearsal.
+For a discussion walkthrough, practise defining the user problem, one observable benefit, MVP cut line, and three demo steps. Do not prepare a challenge-specific dataset, API, or implementation from these prompts.
 
 ## Parking lot
 

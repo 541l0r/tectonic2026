@@ -1,6 +1,6 @@
 # Tectonic hackathon — preparation workspace
 
-Working draft, 27 September 2026. The KBC track is confirmed; a Kate 3.0 theme is our working hypothesis until the actual brief arrives. Use [COMMAND.md](COMMAND.md) for team roles, the demo contract, and the day-of log.
+Working draft, 27 September 2026. The KBC track is confirmed; a Kate 3.0 theme is our working hypothesis until the actual brief arrives. Use [COMMAND.md](COMMAND.md) for the team working agreement and day-of log. We prepare the collaboration method and local environments now; challenge-specific data, schema, API contract, architecture, and solution wait for the brief.
 
 ## Aim
 
@@ -19,7 +19,7 @@ When adding a source, record its date, the claim it supports, and whether the cl
 
 ### KBC signals found by Diana
 
-These five themes are prompts for rehearsal, not predictions of the hidden case. A vacancy shows work inside KBC; it does not tell us what the hackathon brief will ask.
+These five themes are research leads, not predictions of the hidden case or implementation tasks. A vacancy shows work inside KBC; it does not tell us what the hackathon brief will ask.
 
 | Theme | What the linked KBC source supports | Rehearsal probe / caveat |
 | --- | --- | --- |
@@ -48,15 +48,15 @@ These are ways to generate and assess ideas, not ten separate features to build.
 | System Coordination | Can it coordinate several services or teams toward one outcome? |
 | Control & Verification | Can it validate results, explain causes, and check that an action worked? |
 
-## Brainstorm method for a preparation rehearsal
+## Challenge-decomposition method
 
-Use [IDEAS.md](IDEAS.md) as a global idea list and [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md) as the fillable decision board during a rehearsal or the event.
+Use [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md) as the fillable decision board once the brief arrives. [IDEAS.md](IDEAS.md) can prompt discussion if relevant, but no idea there is a preselected solution.
 
 1. Pick one customer situation and one measurable problem. Write it without naming a technology.
 2. Generate several ideas by combining two or three lenses. For each idea, describe the sequence: **trigger → context/evidence → options → customer-approved action → verification**.
 3. Fill in one idea card per candidate. Reject ideas that only add a response or UI feature without changing the customer's outcome.
 4. Compare candidates on customer value, capability leap, evidence/data availability, feasibility for a working demo, and fit with the released brief. Mark unknowns rather than guessing.
-5. Build the hardest proof for the top candidate with mock data: one tool call, retrieval result, calculation, or cross-system handoff. Keep the existing deterministic UI/API slice as fallback.
+5. After all three agree on the MVP, choose the smallest end-to-end proof and its integration fallback. Design the data, interface, and architecture for that proof.
 
 ### Idea card
 
@@ -76,11 +76,12 @@ Use [IDEAS.md](IDEAS.md) as a global idea list and [WORKFLOW_TEMPLATE.md](WORKFL
 
 ### What the hackathon research suggests
 
-A [study of 32 hackathon winners and five organizers](https://arxiv.org/html/2206.04744v1) found a recurring sequence: explore and define a real user problem, consider alternative solutions, then deliver a demonstrable prototype and clear pitch. The authors recommend checking rules, judging criteria, and existing solutions. These are interview findings, not a causal formula for winning. A separate [corporate hackathon case study](https://research.tue.nl/en/publications/utilizing-hackathons-to-foster-sustainable-product-innovation-the/) associated project continuation with focused preparation, a functioning prototype, current-customer fit, and ease of integration. Its outcome was continuation after the event, not a hackathon prize. The decision board applies these ideas to the five-hour Tectonic window.
+A [study of 32 hackathon winners and five organizers](https://arxiv.org/html/2206.04744v1) found a recurring sequence: explore and define a real user problem, consider alternative solutions, then deliver a demonstrable prototype and clear pitch. The authors recommend checking rules, judging criteria, and existing solutions. These are interview findings, not a causal formula for winning. A separate [corporate hackathon case study](https://research.tue.nl/en/publications/utilizing-hackathons-to-foster-sustainable-product-innovation-the/) associated project continuation with focused preparation, a functioning prototype, current-customer fit, and ease of integration. Its outcome was continuation after the event, not a hackathon prize. The decision board applies these ideas to the team's four-hour working budget.
 
 - [ ] Mathieu: confirm the exact registration, location, schedule, case-release process, rules, data access, and submission format with the organizer.
 - [ ] Mathieu, Diana, and Damiens: each clone the GitHub repository, run the demo, and push a small branch. Use the direct branch merge workflow in [COMMAND.md](COMMAND.md).
-- [ ] Damiens: prepare one mock tool and one small retrieval dataset so a candidate can demonstrate context, evidence, and action without waiting for live systems.
-- [ ] Diana: prepare a reusable three-step demo outline and a 90-second pitch structure; adapt both to the chosen case.
-- [ ] All three: run one timed rehearsal using an invented brief and this brainstorm method. Mathieu facilitates the first discussion and 25-minute check-ins; the team chooses the MVP together. Record the chosen idea, essentials, optional work, risks, and first build tasks.
+- [ ] Diana: lead the shared documents and repository coordination remotely; agree with the team on branch ownership and the merge integrator.
+- [ ] Diana and Damiens: agree on general JSON, error, environment-variable, and integration conventions; leave the challenge-specific API contract open.
+- [ ] Diana: prepare a reusable three-step demo and pitch outline; adapt both to the chosen case.
+- [ ] All three: walk through the challenge-decomposition and MVP decision method. Mathieu facilitates the first discussion and 25-minute check-ins; the team chooses the MVP together when the real brief arrives.
 - [ ] All three: when the real brief arrives, replace the Kate 3.0 hypothesis and score concepts against the actual problem before committing to one.
