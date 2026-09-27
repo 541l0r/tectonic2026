@@ -27,4 +27,4 @@ Copy `.env.example` to `.env` only when a provider is actually selected. No key 
 
 ## Git remote
 
-The local `origin` is `git@github.com:541l0r/tectonic2026.git`. From this checkout, `git push -u origin main` publishes the prepared branch when GitHub is reachable and your SSH key has write access. If you receive a `.bundle` copy, clone it with `git clone tectonic2026.bundle tectonic`, then set `origin` to that SSH URL and push.
+The shared repository is `git@github.com:541l0r/tectonic2026.git`. Clone it with `git clone git@github.com:541l0r/tectonic2026.git`. Work on a branch and use the local merge workflow in `COMMAND.md`; no pull request is needed. The original `.bundle` is a backup of the starter, not the shared remote.
