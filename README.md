@@ -1,6 +1,6 @@
 # Tectonic starter
 
-Open [COMMAND.md](COMMAND.md) first. This starter proves that a frontend can render structured assistant output from a mock API. It is a preparation exercise, not a claim about KBC's actual systems or the event challenge.
+Open [COMMAND.md](COMMAND.md) for the team plan and [PREPARATION.md](PREPARATION.md) for sources and brainstorming. This starter proves that a frontend can render structured assistant output from a mock API. It is a preparation exercise, not a claim about KBC's actual systems or the event challenge.
 
 ## Run
 
