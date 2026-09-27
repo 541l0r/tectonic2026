@@ -17,6 +17,20 @@ Explore a step change in what an assistant can accomplish for a customer. A cand
 
 When adding a source, record its date, the claim it supports, and whether the claim is confirmed or inferred. Keep customer data and event-provided material out of public notes unless the rules allow it.
 
+### KBC signals found by Diana
+
+These five themes are prompts for rehearsal, not predictions of the hidden case. A vacancy shows work inside KBC; it does not tell us what the hackathon brief will ask.
+
+| Theme | What the linked KBC source supports | Rehearsal probe / caveat |
+| --- | --- | --- |
+| Customer intent and next action | The indexed [Kate Intent Factory vacancy](https://www.kbc.be/jobs/nl/vacatures/ID89573.html) describes detecting a customer's likely intent from relevant data and selecting suitable communication. That page currently returns 404; a [KBC Global Services job posting](https://cz.linkedin.com/jobs/view/data-engineer-at-kbc-global-services-4420412769) also names the project. Preserve this as a lead to recheck. | Mock a life-event signal, explain the evidence, and compare possible next actions. Lenses: detection, context, decision. |
+| AI quality for Kate | The [AI Prompt Engineer vacancy](https://www.kbc.be/jobs/nl/vacatures/ID90924.html) explicitly covers testing prompts and improving the correctness, consistency, usefulness, speed, and reliability of Kate's AI output. | Build a small quality gate that checks evidence, uncertainty, and escalation. Lenses: control and verification. |
+| Customer onboarding | The [Customer Handling role](https://www.kbc.be/jobs/nl/vacatures/ID90503.html) says onboarding must balance customer experience, compliance, and operational efficiency. It does not specify an AI onboarding project. | Mock missing-information detection and a review path. Lenses: orchestration, context, verification. |
+| Customer documents | The [internship listing](https://www.kbc.be/jobs/nl/stages/ID91001.html) says KBC handles hundreds of thousands of customer documents monthly through several applications and AI-supported solutions. The internship itself concerns Java test automation for a coordinating application. | Mock extraction, conflicting facts, and routing, without claiming this is KBC's requested project. Lenses: knowledge, system coordination, verification. |
+| Fraud and social engineering | KBC's [Guardian Angel announcement](https://newsroom.kbc.com/kbc-brings-guardian-angel-to-more-than-4-million-customers-in-belgium) describes a live trusted-person review for suspicious payments. KBC says its detection system checks more than 150 signals and 700 patterns. | Explore an extension that explains or verifies a risk; do not pitch Guardian Angel itself as new. Lenses: detection, human coordination, verification. |
+
+When the brief arrives, match its wording against these themes. If none fits, set them aside and start from the actual user problem.
+
 ## Ten innovation lenses
 
 These are ways to generate and assess ideas, not ten separate features to build.
