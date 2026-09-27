@@ -20,7 +20,7 @@ Ship one end-to-end demo that answers a real user request with a useful action o
 | --- | --- | --- |
 | Mathieu | Product scope, AI command, agent tasks, and integration decisions | Choose the problem and acceptance criteria; keep this sheet current |
 | Diana | Frontend, live demo, and pitch story | Render the semantic response blocks; write and rehearse the pitch |
-| Backend lead | API and integration architecture | Keep `/api/ask` contract stable and provide a working mock response |
+| Damiens | Backend API and integration architecture | Keep `/api/ask` contract stable and provide a working mock response |
 
 Use one owner per area. Anyone can propose a change; the API owner confirms contract changes before the frontend and backend branches diverge.
 
@@ -29,7 +29,7 @@ Use one owner per area. Anyone can propose a change; the API owner confirms cont
 | Time | Team action | Exit check |
 | --- | --- | --- |
 | 0–15 min | Read brief, choose one user and one problem. Mathieu defines the scope; Diana writes the pitch and demo path above. | Everyone can repeat the same goal. |
-| 15–30 min | Backend lead and Diana agree on request/response JSON. Pick a mock dataset and one useful tool. | One sample request and response committed. |
+| 15–30 min | Damiens and Diana agree on request/response JSON. Pick a mock dataset and one useful tool. | One sample request and response committed. |
 | 30–55 min | Build independently against that contract. Diana prepares a 90-second narrative; Mathieu gives AI agents small file-scoped tasks. | UI and API each run locally. |
 | 55–75 min | Connect UI to API; run the full demo once. | A working vertical slice on `main`. |
 
