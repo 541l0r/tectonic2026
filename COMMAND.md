@@ -18,10 +18,9 @@ Ship one end-to-end demo that answers a real user request with a useful action o
 
 | Owner | Responsibility | First deliverable |
 | --- | --- | --- |
-| Mathieu | Product scope, AI command, agent tasks, integration decisions, pitch story | Choose the problem and acceptance criteria; keep this sheet current |
-| Diana | Frontend and live demo | Render the semantic response blocks and rehearse the user journey |
+| Mathieu | Product scope, AI command, agent tasks, and integration decisions | Choose the problem and acceptance criteria; keep this sheet current |
+| Diana | Frontend, live demo, and pitch story | Render the semantic response blocks; write and rehearse the pitch |
 | Backend lead | API and integration architecture | Keep `/api/ask` contract stable and provide a working mock response |
-| Fourth teammate, if present | One bounded task agreed after the brief | A visible slice with its own owner and deadline |
 
 Use one owner per area. Anyone can propose a change; the API owner confirms contract changes before the frontend and backend branches diverge.
 
@@ -29,9 +28,9 @@ Use one owner per area. Anyone can propose a change; the API owner confirms cont
 
 | Time | Team action | Exit check |
 | --- | --- | --- |
-| 0–15 min | Read brief, choose one user and one problem. Mathieu writes the pitch and demo path above. | Everyone can repeat the same goal. |
+| 0–15 min | Read brief, choose one user and one problem. Mathieu defines the scope; Diana writes the pitch and demo path above. | Everyone can repeat the same goal. |
 | 15–30 min | Backend lead and Diana agree on request/response JSON. Pick a mock dataset and one useful tool. | One sample request and response committed. |
-| 30–55 min | Build independently against that contract. Mathieu prepares a 90-second narrative and gives AI agents small file-scoped tasks. | UI and API each run locally. |
+| 30–55 min | Build independently against that contract. Diana prepares a 90-second narrative; Mathieu gives AI agents small file-scoped tasks. | UI and API each run locally. |
 | 55–75 min | Connect UI to API; run the full demo once. | A working vertical slice on `main`. |
 
 After that: improve the core idea, deploy when stable, rehearse, then keep a final buffer. Reduce scope when integration slips.
@@ -74,7 +73,8 @@ Confirm the event's rules and available data before connecting any real service 
 main             always demoable
 feat/frontend    Diana's UI changes
 feat/backend     API and data changes
-feat/product     Mathieu's copy or orchestration changes
+feat/product     Mathieu's scope or orchestration notes
+feat/pitch       Diana's pitch story
 ```
 
 We will not use pull requests. Each owner pulls the latest `main`, works on their own branch, makes small commits, and pushes that branch. Mathieu (or a named integrator) merges one branch at a time into `main` locally, runs the full demo check, then pushes `main`. Everyone pulls `main` again after a merge. Avoid simultaneous edits to the same file and do not force-push shared branches.
@@ -122,4 +122,4 @@ Before the event: each person clones the shared remote, runs both services, send
 
 **Risks and fallback:** [What could break; how the mock slice still demonstrates the idea.]
 
-**Pitch:** [Problem → insight → working demo → measurable benefit.]
+**Pitch (Diana):** [Problem → insight → working demo → measurable benefit.]
