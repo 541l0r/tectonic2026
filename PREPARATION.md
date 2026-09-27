@@ -50,6 +50,8 @@ These are ways to generate and assess ideas, not ten separate features to build.
 
 ## Brainstorm method for a preparation rehearsal
 
+Use [IDEAS.md](IDEAS.md) as a global idea list and [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md) as the fillable decision board during a rehearsal or the event.
+
 1. Pick one customer situation and one measurable problem. Write it without naming a technology.
 2. Generate several ideas by combining two or three lenses. For each idea, describe the sequence: **trigger → context/evidence → options → customer-approved action → verification**.
 3. Fill in one idea card per candidate. Reject ideas that only add a response or UI feature without changing the customer's outcome.
@@ -71,6 +73,10 @@ These are ways to generate and assess ideas, not ten separate features to build.
 | What are the three visible demo steps and the mock-data fallback? | [ ] |
 
 ## PM and organization before the event
+
+### What the hackathon research suggests
+
+A [study of 32 hackathon winners and five organizers](https://arxiv.org/html/2206.04744v1) found a recurring sequence: explore and define a real user problem, consider alternative solutions, then deliver a demonstrable prototype and clear pitch. The authors recommend checking rules, judging criteria, and existing solutions. These are interview findings, not a causal formula for winning. A separate [corporate hackathon case study](https://research.tue.nl/en/publications/utilizing-hackathons-to-foster-sustainable-product-innovation-the/) associated project continuation with focused preparation, a functioning prototype, current-customer fit, and ease of integration. Its outcome was continuation after the event, not a hackathon prize. The decision board applies these ideas to the five-hour Tectonic window.
 
 - [ ] Mathieu: confirm the exact registration, location, schedule, case-release process, rules, data access, and submission format with the organizer.
 - [ ] Mathieu, Diana, and Damiens: each clone the GitHub repository, run the demo, and push a small branch. Use the direct branch merge workflow in [COMMAND.md](COMMAND.md).
