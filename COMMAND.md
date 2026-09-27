@@ -62,15 +62,34 @@ feat/backend     API and data changes
 feat/product     Mathieu's copy or orchestration changes
 ```
 
-Start from `main`, make small commits, and merge one branch at a time after a local demo check. Avoid simultaneous edits to the same file. Put decisions and current blockers here, not across chat threads. Give coding agents one bounded task, exact files, expected behavior, and a verification command. Integrate their output yourself.
+We will not use pull requests. Each owner pulls the latest `main`, works on their own branch, makes small commits, and pushes that branch. Mathieu (or a named integrator) merges one branch at a time into `main` locally, runs the full demo check, then pushes `main`. Everyone pulls `main` again after a merge. Avoid simultaneous edits to the same file and do not force-push shared branches.
 
-Before the event: each person clones the shared remote, runs both services, sends a request, opens the UI, and checks that Git push access works. Keep `.env` private and use `.env.example` for names only.
+```bash
+git switch main
+git pull --ff-only origin main
+git switch -c feat/my-task              # first time only
+# edit, then git add and git commit
+git push -u origin feat/my-task
+
+# integrator, after checking the branch
+git switch main
+git pull --ff-only origin main
+git fetch origin
+git merge --no-ff origin/feat/my-task
+# run the full demo check
+git push origin main
+```
+
+Put decisions and current blockers here, not across chat threads. Give coding agents one bounded task, exact files, expected behavior, and a verification command. Integrate their output yourself.
+
+Before the event: each person clones the shared remote, runs both services, sends a request, opens the UI, and proves Git push access by pushing their own branch. Keep `.env` private and use `.env.example` for names only.
 
 ## Current preparation checklist
 
 - [x] Local repository and baseline mock vertical slice
 - [ ] Confirm access to `git@github.com:541l0r/tectonic2026.git` for each teammate
-- [ ] Push `main`; each teammate clones and runs it
+- [x] Publish the starter on `main`
+- [ ] Each teammate clones, runs both services, and pushes their own branch
 - [ ] Confirm challenge rules, allowed tools/data, presentation time, and submission format from the organizer
 - [ ] Choose model/provider and deployment only after available credentials and event constraints are known
 - [ ] Practice a timed 75-minute trial with one invented prompt
