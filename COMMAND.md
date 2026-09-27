@@ -51,7 +51,22 @@ After that: improve the core idea, deploy when stable, rehearse, then keep a fin
 }
 ```
 
-`blocks` is a small semantic UI vocabulary: `text`, `metric`, and `list`. Add a new type only with a sample JSON response and a UI renderer. The server validates input; the UI treats all response text as untrusted. A real LLM adapter later returns the same validated schema, preserves the user's original request, and may call approved tools. Never put API keys in the browser or commit them.
+`blocks` is a small semantic UI vocabulary: `text`, `metric`, and `list`. Add a new type only with a sample JSON response and a UI renderer. The server validates input; the UI treats all response text as untrusted. This v0 contract only proves the UI/API connection; it is not the intended final assistant design. Never put API keys in the browser or commit them.
+
+### Interface v1 preparation to-do
+
+Use an invented brief and mock data for these tasks. Adapt the data and tools when the real challenge is announced.
+
+| Area | Preparation task | Done when |
+| --- | --- | --- |
+| Context | Decide what one request carries: current message, session ID, recent turns, and any allowed user or task context. Define a reset and a size limit. | Two related questions work in sequence, and a reset removes prior context. |
+| Tools | Define a small tool registry with typed inputs and outputs, permissions, timeouts, and failure responses. Implement one read-only mock tool. | A request can call the tool, show what it used, and recover from a tool error. |
+| RAG | Build a tiny local document set and retrieval path: chunk, index, search, and return source IDs or excerpts. | The assistant answers a document question with a source reference and says when the documents do not support an answer. |
+| Response contract | Agree on a v1 JSON example for answer, UI blocks, source references, tool activity, and errors. Keep the same shape for mock and model-backed responses. | Frontend and backend can work independently from the same examples. |
+| Orchestration | Decide when to use conversation context, retrieval, or a tool. Keep a deterministic mock path so the demo works without a model or network. | One end-to-end example uses context, one uses retrieval, and one uses a tool. |
+| Evaluation | Prepare a small set of checks for follow-up questions, grounded answers, tool failure, missing evidence, and invalid input. | The team can run the same checks after each integration. |
+
+Confirm the event's rules and available data before connecting any real service or changing the v1 examples to fit the challenge.
 
 ## Repository workflow
 
@@ -91,6 +106,7 @@ Before the event: each person clones the shared remote, runs both services, send
 - [x] Publish the starter on `main`
 - [ ] Each teammate clones, runs both services, and pushes their own branch
 - [ ] Confirm challenge rules, allowed tools/data, presentation time, and submission format from the organizer
+- [ ] Complete the interface v1 preparation tasks above with mock data
 - [ ] Choose model/provider and deployment only after available credentials and event constraints are known
 - [ ] Practice a timed 75-minute trial with one invented prompt
 
