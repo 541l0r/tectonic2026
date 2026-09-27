@@ -28,9 +28,10 @@ Use one owner per area. Anyone can propose a change; the API owner confirms cont
 
 | Time | Team action | Exit check |
 | --- | --- | --- |
-| 0–15 min | Read brief, choose one user and one problem. Mathieu defines the scope; Diana writes the pitch and demo path above. | Everyone can repeat the same goal. |
-| 15–30 min | Damiens and Diana agree on request/response JSON. Pick a mock dataset and one useful tool. | One sample request and response committed. |
-| 30–55 min | Build independently against that contract. Diana prepares a 90-second narrative; Mathieu gives AI agents small file-scoped tasks. | UI and API each run locally. |
+| 0–15 min | Read the brief and judging criteria. Define one user, problem, and existing KBC process to improve. | Everyone can repeat the same goal. |
+| 15–30 min | Generate at most three ideas with [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md); choose one. Diana writes the pitch and three-step demo path. | Chosen idea, cut line, and fallback are recorded. |
+| 30–40 min | Damiens and Diana agree on request/response JSON. Pick a mock dataset and one useful tool. | One sample request and response committed. |
+| 40–55 min | Build independently against that contract. Diana prepares a 90-second narrative; Mathieu gives AI agents small file-scoped tasks. | UI and API each run locally. |
 | 55–75 min | Connect UI to API; run the full demo once. | A working vertical slice on `main`. |
 
 After that: improve the core idea, deploy when stable, rehearse, then keep a final buffer. Reduce scope when integration slips.
@@ -108,7 +109,7 @@ Before the event: each person clones the shared remote, runs both services, send
 - [ ] Confirm challenge rules, allowed tools/data, presentation time, and submission format from the organizer
 - [ ] Complete the interface v1 preparation tasks above with mock data
 - [ ] Choose model/provider and deployment only after available credentials and event constraints are known
-- [ ] Practice a timed 75-minute trial with one invented prompt
+- [ ] Practice a timed 75-minute trial with one invented prompt from [IDEAS.md](IDEAS.md)
 
 ## Day-of log
 
