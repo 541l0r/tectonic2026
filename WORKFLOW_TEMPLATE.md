@@ -21,7 +21,7 @@ Use this as a shared decision board after the real brief arrives. The team chang
 
 ## 2. Create at most three candidate ideas (minutes 20–35)
 
-Use the [global idea list](IDEAS.md) and the ten lenses in [PREPARATION.md](PREPARATION.md) only as prompts when relevant. Ask a mentor or organizer to clarify a material unknown when possible. Fill one row per candidate.
+Use the [global idea list](IDEAS.md) and the ten lenses in [COMMAND.md](COMMAND.md) only as prompts when relevant. Ask a mentor or organizer to clarify a material unknown when possible. Fill one row per candidate.
 
 | Idea | User outcome | Combined lenses | Evidence/context | Customer-approved action | Three visible demo steps |
 | --- | --- | --- | --- | --- | --- |

@@ -1,6 +1,6 @@
 # Global view — Kate 3.0 rehearsal ideas
 
-Working hypotheses for the KBC track, 27 September 2026. The challenge is still hidden. These are discussion prompts, not predictions, selected solutions, or tasks to build before the event. Use the actual brief and judging criteria to choose or discard them. [PREPARATION.md](PREPARATION.md) records Diana's KBC sources and the ten innovation lenses; [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md) is the day-of decision board.
+Working hypotheses for the KBC track, 27 September 2026. The challenge is still hidden. These are discussion prompts, not predictions, selected solutions, or tasks to build before the event. Use the actual brief and judging criteria to choose or discard them. [COMMAND.md](COMMAND.md) records Diana's KBC sources and the ten innovation lenses; [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md) is the day-of decision board.
 
 ## What would feel like a capability leap?
 

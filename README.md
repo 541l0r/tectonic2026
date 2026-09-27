@@ -1,6 +1,6 @@
 # Tectonic starter
 
-Open [COMMAND.md](COMMAND.md) for the team plan, [PREPARATION.md](PREPARATION.md) for sources and brainstorming, [IDEAS.md](IDEAS.md) for the global idea list, and [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md) for a fillable brief-to-demo decision board. This starter proves that a frontend can render structured assistant output from a mock API. It is a preparation exercise, not a claim about KBC's actual systems or the event challenge.
+Open [COMMAND.md](COMMAND.md) for the team plan, sources, and ideation method; [IDEAS.md](IDEAS.md) for the global idea list; and [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md) for a fillable brief-to-demo decision board. This starter proves that a frontend can render structured assistant output from a mock API. It is a preparation exercise, not a claim about KBC's actual systems or the event challenge.
 
 ## Run
 
@@ -31,7 +31,7 @@ npm run dev
 
 Open `http://localhost:5173`. Vite proxies `/api` to `http://localhost:5000`. Smoke check: `curl -s http://localhost:5000/api/health` and `curl -s -X POST http://localhost:5000/api/ask -H 'Content-Type: application/json' -d '{"message":"Show my spending","user_id":"demo"}'`.
 
-Copy `.env.example` to `.env` only when a provider is actually selected. No key is needed for the mock. The API contract and role split live in `COMMAND.md`.
+Copy `.env.example` to `.env` only when a provider is actually selected. No key is needed for the current connectivity check. The team roles and method for agreeing on an MVP interface live in `COMMAND.md`.
 
 ## Git remote
 
