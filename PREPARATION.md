@@ -82,5 +82,5 @@ A [study of 32 hackathon winners and five organizers](https://arxiv.org/html/220
 - [ ] Mathieu, Diana, and Damiens: each clone the GitHub repository, run the demo, and push a small branch. Use the direct branch merge workflow in [COMMAND.md](COMMAND.md).
 - [ ] Damiens: prepare one mock tool and one small retrieval dataset so a candidate can demonstrate context, evidence, and action without waiting for live systems.
 - [ ] Diana: prepare a reusable three-step demo outline and a 90-second pitch structure; adapt both to the chosen case.
-- [ ] Mathieu: run one timed rehearsal using an invented brief and this brainstorm method. Record the chosen idea, rejected alternatives, risks, and the first build tasks.
+- [ ] All three: run one timed rehearsal using an invented brief and this brainstorm method. Mathieu facilitates the first discussion and 25-minute check-ins; the team chooses the MVP together. Record the chosen idea, essentials, optional work, risks, and first build tasks.
 - [ ] All three: when the real brief arrives, replace the Kate 3.0 hypothesis and score concepts against the actual problem before committing to one.
