@@ -29,7 +29,7 @@ Use the [global idea list](IDEAS.md) and the ten lenses in [PREPARATION.md](PREP
 | B | [ ] | [ ] | [ ] | [ ] | [ ] |
 | C | [ ] | [ ] | [ ] | [ ] | [ ] |
 
-## 3. Choose one (by minute 30)
+## 3. Choose one together (by minute 30)
 
 First reject any idea that misses the brief, needs forbidden or unavailable data, or cannot show a working result with mock data. For the remaining ideas, score each criterion 0–2 (0 = weak, 1 = plausible, 2 = strong). Record why, not only the total. Use the actual judging criteria to break a tie.
 
@@ -41,7 +41,13 @@ First reject any idea that misses the brief, needs forbidden or unavailable data
 
 **Chosen idea and reason:** [ ]
 
+**Team agreement:** [What each of Mathieu, Diana, and Damiens thinks is essential; note any concern.]
+
 **Cut line:** [The smallest end-to-end version that still proves the idea.]
+
+**Essential:** [ ]
+
+**Optional if time remains:** [ ]
 
 **Fallback:** [What runs if the model, data source, or integration fails.]
 
@@ -53,8 +59,8 @@ First reject any idea that misses the brief, needs forbidden or unavailable data
 | --- | --- | --- |
 | By minute 40 | Has Diana and Damiens agreed on one request/response example and the mock data needed? | Diana + Damiens |
 | By minute 75 | Is the UI → API → visible result working with mock data? If no, cut scope until it is. | Diana + Damiens |
-| After the first working slice | Does one mechanism prove the capability leap (tool, retrieval, calculation, or coordination)? If no, build only the strongest one. | Mathieu + Damiens |
-| Every 30 minutes thereafter | What works, what is blocked, and what is the next smallest visible improvement? If a blocker persists 15 minutes, use the mock boundary and move on. | Mathieu |
+| After the first working slice | Does one mechanism prove the capability leap (tool, retrieval, calculation, or coordination)? If no, agree on the strongest one. | All three |
+| Every 25 minutes | What works, what is blocked, how is everyone doing, and what is the next smallest visible improvement? Mathieu keeps this brief and tracks time; the team decides scope changes. If a blocker persists 15 minutes, use the mock boundary and move on. | Mathieu facilitates; all three decide |
 | 60 minutes before deadline | Freeze new features. Verify the demo path, output, and fallback. | All three |
 | 30 minutes before deadline | Rehearse the pitch and run the exact submission path. | Diana + Mathieu |
 
@@ -69,6 +75,10 @@ First reject any idea that misses the brief, needs forbidden or unavailable data
 **Latest working demo command / URL:** [ ]
 
 **Current blocker and decision:** [ ]
+
+**Whole-demo acceptance criteria and scenarios:** [Mathieu drafts while the team builds. Include the normal path, missing evidence or tool failure, and the fallback; all three review.]
+
+**Integration check:** [Branch/build state, UI → API result, owner of next fix, and next run time.]
 
 ## 5. Final proof
 
