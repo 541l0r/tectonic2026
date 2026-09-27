@@ -4,7 +4,7 @@ Updated: 27 September 2026. This is the single working document for preparation 
 
 ## Goal and working rule
 
-Ship one end-to-end demo that answers a real user request with a useful action or decision. Start with a working slice, then deepen the innovation. The current mock banking assistant is only a test bed; the challenge brief determines the product.
+When the brief arrives, the three of us choose the smallest useful MVP together. It should solve one concrete user problem, show a meaningful capability beyond a single answer, and produce a visible result. Start with one end-to-end slice and deepen it only if time allows. The current mock banking assistant is a test bed; the challenge brief determines the product.
 
 **One sentence pitch:** [Fill in when the challenge is announced.]
 
@@ -14,27 +14,35 @@ Ship one end-to-end demo that answers a real user request with a useful action o
 
 **Cut line:** The demo still works with mock data and a deterministic response. A live model, real banking data, voice, and advanced hosting are optional integrations.
 
+**Essential for this brief:** [Agree together after reading the challenge.]
+
+**Optional if time remains:** [Agree together.]
+
+**Whole-demo acceptance criteria and scenarios:** [Mathieu drafts these while the team builds; all three review them. Include the happy path, missing evidence or tool failure, and the fallback.]
+
 ## Owners and interfaces
 
 | Owner | Responsibility | First deliverable |
 | --- | --- | --- |
-| Mathieu | Product scope, AI command, agent tasks, and integration decisions | Choose the problem and acceptance criteria; keep this sheet current |
+| Mathieu | Facilitate the first ideation discussion, watch the clock, bring useful methods and the global view, draft whole-demo acceptance criteria and scenarios, and coordinate integration | Run a brief check-in every 25 minutes; record the shared MVP decision and the next integration check |
 | Diana | Frontend, live demo, and pitch story | Render the semantic response blocks; write and rehearse the pitch |
 | Damiens | Backend API and integration architecture | Keep `/api/ask` contract stable and provide a working mock response |
 
 Use one owner per area. Anyone can propose a change; the API owner confirms contract changes before the frontend and backend branches diverge.
 
+All three decide the MVP and what is essential versus optional. Keep discussions open and respectful; a check-in should surface concerns and help the team make the next decision, not turn into a status ceremony.
+
 ## First 75 minutes after the brief
 
 | Time | Team action | Exit check |
 | --- | --- | --- |
-| 0–15 min | Read the brief and judging criteria. Define one user, problem, and existing KBC process to improve. | Everyone can repeat the same goal. |
-| 15–30 min | Generate at most three ideas with [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md); choose one. Diana writes the pitch and three-step demo path. | Chosen idea, cut line, and fallback are recorded. |
+| 0–15 min | Read the brief and judging criteria. Define one user, problem, and existing KBC process to improve. Mathieu facilitates and tracks time. | Everyone can repeat the same goal. |
+| 15–30 min | Generate at most three ideas with [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md); all three choose the smallest useful MVP. Diana writes the pitch and three-step demo path. | Shared choice, essentials, optional work, cut line, and fallback are recorded. |
 | 30–40 min | Damiens and Diana agree on request/response JSON. Pick a mock dataset and one useful tool. | One sample request and response committed. |
-| 40–55 min | Build independently against that contract. Diana prepares a 90-second narrative; Mathieu gives AI agents small file-scoped tasks. | UI and API each run locally. |
+| 40–55 min | Build independently against that contract. Diana prepares a 90-second narrative; Mathieu drafts whole-demo acceptance criteria and test scenarios. | UI and API each run locally; the demo checks are written down. |
 | 55–75 min | Connect UI to API; run the full demo once. | A working vertical slice on `main`. |
 
-After that: improve the core idea, deploy when stable, rehearse, then keep a final buffer. Reduce scope when integration slips.
+After that: make a quick team check-in every 25 minutes, improve the core idea, deploy when stable, rehearse, then keep a final buffer. The team cuts optional work when integration slips.
 
 ## Interface contract v0
 
