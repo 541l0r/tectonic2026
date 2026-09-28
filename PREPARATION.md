@@ -88,7 +88,7 @@ If AI is involved:
 - [ ] Define Must / Should / Could / Won't criteria.
 - [ ] Prepare a simple acceptance-criteria template.
 - [ ] Prepare business-value / KPI questions.
-- [ ] Review how Prelint could support requirements/specification checking ([draft note](PRELINT.md)); connect the eventual check to the acceptance criteria.
+- [x] Review how Prelint could support requirements/specification checking ([review and decision](docs/PRELINT.md)); connect the eventual check to the acceptance criteria.
 - [ ] Prepare the product/business structure for the final pitch.
 - [ ] Define how we quickly decide which capabilities are relevant to the challenge.
 
@@ -103,7 +103,7 @@ Then:
 - Maintain scope discipline.
 - Define acceptance criteria.
 - Prepare test scenarios.
-- When integration or a scope change raises doubt, run the lightweight [product-alignment check](PRELINT.md#our-simpler-alignment-check) against the agreed Must-have acceptance criteria.
+- When integration or a scope change raises doubt, run the lightweight [product-alignment check](docs/PRELINT.md#our-simpler-alignment-check) against the agreed Must-have acceptance criteria.
 - Track integration status.
 - Support coding when needed.
 - Prepare business value and KPI.
@@ -374,7 +374,7 @@ Check whether implementation remains aligned with:
 
 Especially useful if the challenge contains strict rules or compliance requirements.
 
-Mathieu's [one-page Prelint review](PRELINT.md) explains its capabilities and why we do not plan to use it in our four-hour, no-PR workflow.
+Mathieu's [one-page Prelint review](docs/PRELINT.md) explains its capabilities and why we do not plan to use it in our four-hour, no-PR workflow.
 
 ---
 
