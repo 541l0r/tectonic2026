@@ -1,9 +1,10 @@
 """Small mock API; replace the response engine after the challenge is known."""
 
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app)
 
 @app.get("/api/health")
 def health():
@@ -34,4 +35,4 @@ def ask():
 
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000)
+    app.run(debug=True, port=5000)
