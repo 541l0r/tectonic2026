@@ -23,4 +23,14 @@ The idea is useful: code can run correctly yet miss the customer need or break a
 
 For our **four-hour prototype**, I would **not set up Prelint**. We have three people, a small codebase, and a direct branch-merge workflow with no PRs. Its main review mechanism therefore does not fit our process, and setup plus repeated review would consume time better spent on integration and the demo. A focused AI review using the released brief, our Must-have acceptance criteria, and the actual code diff should cover the relevant product-alignment check. We still need to run the main user journey and a failure scenario ourselves.
 
+## Our simpler alignment check
+
+We can use Prelint's **method** without installing it. After selecting the MVP, write a few observable acceptance criteria from the brief and agreed Must-have scope. When the first end-to-end slice is integrated, or a meaningful scope or behaviour change raises doubt, compare the build with those criteria:
+
+- Does every Must-have criterion have a working, visible result? Are business rules and challenge constraints respected?
+- Do frontend, backend, and the demo story describe the same behaviour? Are errors, uncertainty, and customer approval handled where relevant?
+- Has optional work displaced a Must-have, or does the pitch claim something we cannot demonstrate?
+
+Mathieu can ask an AI reviewer to inspect the brief, criteria, decisions, and code diff for **concrete, evidence-backed mismatches**. The team then decides what to fix and runs the agreed normal and failure scenarios. This is a short product-alignment gate when useful, not a review on every commit.
+
 **Decision:** We do not plan to use Prelint for this hackathon. Its absence will not weaken the prototype if we review the agreed requirements and run the demo checks ourselves.
