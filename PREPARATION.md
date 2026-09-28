@@ -373,6 +373,8 @@ Check whether implementation remains aligned with:
 
 Especially useful if the challenge contains strict rules or compliance requirements.
 
+Mathieu's [one-page Prelint review](PRELINT.md) explains its capabilities and why we do not plan to use it in our four-hour, no-PR workflow.
+
 ---
 
 ## ElevenLabs
