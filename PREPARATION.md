@@ -84,13 +84,13 @@ If AI is involved:
 ### Before Wednesday
 
 - [ ] Prepare a lightweight ideation method.
-- [ ] Prepare a fast MVP-selection method.
-- [ ] Define Must / Should / Could / Won't criteria.
-- [ ] Prepare a simple acceptance-criteria template.
-- [ ] Prepare business-value / KPI questions.
+- [x] Prepare a fast MVP-selection method ([general rule](COMMAND.md#6-from-brief-to-mvp) and [day-of selection template](WORKFLOW_TEMPLATE.md#4-select-the-mvp-within-that-direction-by-minute-60)).
+- [x] Define Must / Should / Could / Won't criteria ([definitions, boundary test, and worked example](COMMAND.md#6-from-brief-to-mvp); [day-of fields](WORKFLOW_TEMPLATE.md#4-select-the-mvp-within-that-direction-by-minute-60)).
+- [x] Prepare a simple acceptance-criteria template ([method, worked example, and run sheet](docs/ACCEPTANCE_CRITERIA.md)).
+- [x] Prepare business-value / KPI questions ([KBC-track questions](COMMAND.md#6-from-brief-to-mvp) and [day-of KPI fields](WORKFLOW_TEMPLATE.md#3-choose-a-product-direction-and-describe-the-vision-by-minute-40)).
 - [x] Review how Prelint could support requirements/specification checking ([review and decision](docs/PRELINT.md)); connect the eventual check to the acceptance criteria.
-- [ ] Prepare the product/business structure for the final pitch.
-- [ ] Define how we quickly decide which capabilities are relevant to the challenge.
+- [x] Prepare the product/business structure for the final pitch ([jury questions and business story](COMMAND.md#8-acceptance-and-jury-story); [day-of proof checks](WORKFLOW_TEMPLATE.md#6-final-proof)).
+- [x] Define how we quickly decide which capabilities are relevant to the challenge ([scope and capability gate](COMMAND.md#6-from-brief-to-mvp); [MVP selection steps](WORKFLOW_TEMPLATE.md#4-select-the-mvp-within-that-direction-by-minute-60)).
 
 ### During the Hackathon
 
@@ -101,11 +101,12 @@ Lead:
 Then:
 
 - Maintain scope discipline.
+- Explore feature options and run targeted searches to answer questions raised by the real brief; share findings with the team.
 - Define acceptance criteria.
 - Prepare test scenarios.
 - When integration or a scope change raises doubt, run the lightweight [product-alignment check](docs/PRELINT.md#our-simpler-alignment-check) against the agreed Must-have acceptance criteria.
 - Track integration status.
-- Support coding when needed.
+- Support frontend or backend coding on bounded tasks agreed with Diana or Damiens, including the files and interface to touch.
 - Prepare business value and KPI.
 - Support final pitch and Q&A.
 - Prevent unnecessary feature expansion.
@@ -490,15 +491,15 @@ Does a human/customer remain in control of consequential actions?
 
 # 11. MVP Gate
 
-Before building, ask:
+Before building, classify proposed **product features and requirements**, not teammate tasks. Mandatory brief and event constraints are Must-haves, not optional choices.
 
 ### MUST
 
-Without this, there is no convincing prototype.
+Without this, the MVP promise fails or a mandatory constraint is missed.
 
 ### SHOULD
 
-Important, but the demo still works without it.
+Important, but the main user journey still works without it.
 
 ### COULD
 
@@ -514,7 +515,9 @@ Rule:
 
 ---
 
-# 12. Flexible 4-Hour Timebox
+# 12. Earlier timebox draft — reconcile before Wednesday
+
+This section records an earlier schedule. The current working method and day-of timing are in [COMMAND.md](COMMAND.md) and [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md). Before the event, agree on one schedule; in particular, integrate the first working slice early rather than waiting until 02:30.
 
 ## 00:00–00:10 — Understand
 
@@ -753,3 +756,18 @@ We are arriving with:
 So when the challenge appears, our energy goes into:
 
 **solving the problem, not organizing ourselves.**
+
+# 17. Operational readiness checklist
+
+- [x] Local repository and baseline mock vertical slice
+- [ ] Confirm access to `git@github.com:541l0r/tectonic2026.git` for each teammate
+- [x] Publish the starter on `main`
+- [ ] Each teammate clones, runs both services, and pushes their own branch
+- [ ] Confirm challenge rules, allowed tools/data, presentation time, and submission format from the organizer
+- [ ] Confirm registration, location, schedule, and case-release process with the organizer
+- [ ] Agree on Git ownership, backups, JSON/error conventions, and the integration check
+- [ ] Diana and Damiens agree on generic interface conventions while leaving the MVP contract open
+- [ ] Review the trusted AI questions, acceptance-criteria template, and demo outline above
+- [ ] Diana prepares a reusable three-step demo and pitch outline
+- [ ] Decide model/provider, data, architecture, and deployment only after the brief and event constraints are known
+- [ ] All three walk through [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md) together without committing to an invented solution

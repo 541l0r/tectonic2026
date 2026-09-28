@@ -1,71 +1,53 @@
-# Tectonic — team command sheet
+# Tectonic — team method (working draft)
 
-Updated: 27 September 2026. This is the team working agreement. The challenge, data, API contract, architecture, and product scope are decided after the real brief arrives.
+Updated: 28 September 2026. This is the method Mathieu can explain to the team before the challenge. The separate [day-of guide](WORKFLOW_TEMPLATE.md) is filled in together as the work progresses. Both are working drafts for now. The challenge, data, API contract, architecture, and product scope are decided after the real brief arrives.
 
-## Goal and working rule
+## 1. Purpose and shared rules
 
 We arrive knowing how to build together within the four-hour working window. We do not arrive with a chosen solution, database schema, dataset, API contract, or architecture. The existing UI and API are only a generic connectivity check. Once we know the brief, all three choose the smallest useful MVP that solves one concrete user problem and produces a visible result.
 
-**One sentence pitch:** [Fill in when the challenge is announced.]
+Our method is **brief → understand the user problem → explore ideas → define the future KBC product vision → choose one hackathon MVP together → build a complete user journey → check it against agreed criteria → demo**. We can revisit an earlier decision when new evidence or time pressure requires it. [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md) is the fillable board for the event; this sheet explains how to use it.
 
-**User / pain / measurable result:** [Fill in.]
+## 2. Shared vocabulary
 
-**Demo path (three steps):** 1. [input] 2. [intelligence] 3. [visible result]
+| Term | Meaning for this hackathon |
+| --- | --- |
+| Challenge brief | The organizer's actual request, rules, and judging criteria. It takes precedence over our preparation ideas. |
+| User | The specific person whose situation we want to improve. |
+| Useful outcome | What that user can understand, decide, or accomplish with the solution. |
+| User journey | The few steps from the user's starting situation to that useful outcome; the demo should make this journey visible. |
+| Future KBC product vision | A clear picture of what the solution could become at KBC: who uses it, the full experience, what is different from today, and the value it could create. |
+| Hackathon product (MVP) | The smallest working version we build and demonstrate in four hours to show one useful outcome. All three choose it after reading the brief. |
+| Product scope | What our hackathon product actually lets the user do, the constraints it respects, and what it excludes. A list of screens alone does not define it. |
+| Build tasks | The activities assigned to teammates to create and check the product, such as building a screen, connecting an API, or running a scenario. These are actions by us, not capabilities for the user. |
+| Feature | A capability we might build. It is Must-have only if the MVP promise or journey fails without it. |
+| Must / Should / Could / Won't | A way to sort proposed product features and requirements, not teammate tasks. Must: necessary for the MVP promise or required by the brief. Should: important but the main journey can work without it. Could: optional improvement. Won't: explicitly outside this MVP. Mandatory event rules are always Must. |
+| Cut line | The boundary between capabilities the hackathon product needs and optional capabilities we can drop when time is short. |
+| Vertical slice | A small but complete part of the journey, from UI action through the necessary backend or tool to a visible result. |
+| Interface contract | The agreed example request, response, and error behaviour that lets Diana and Damiens connect their work. The actual contract is chosen after the MVP. |
+| Acceptance criterion | An observable condition agreed for a feature or for the whole hackathon product. Feature checks feed the product decision; the complete journey and mandatory constraints also need their own checks. |
+| Test scenario | A concrete input, action, and expected result used to check an acceptance criterion, including a relevant failure case. |
+| Integration | The frontend, backend, and any selected tool working together to produce the visible result. Start it early. |
+| Fallback | The agreed, honest demo path if a selected service or tool fails. Define it for the actual MVP, not before the brief. |
+| Done / Integrated / Verified | Done: the owner has completed a task. Integrated: it works with the other parts. Verified: its relevant feature criteria pass on the current build. |
+| Product accepted for demo | All three have seen the Must-have feature checks and whole-product scenarios pass on the current integrated build, or have jointly narrowed the promise and updated the criteria and pitch. |
+| Demo claim | The specific part of the vision we can show working now, with a clear distinction between live, simulated, and future capabilities. |
 
-**Cut line:** [The smallest useful result we can demonstrate for the actual challenge.]
-
-**Essential for this brief:** [Agree together after reading the challenge.]
-
-**Optional if time remains:** [Agree together.]
-
-**Whole-demo acceptance criteria and scenarios:** [Mathieu drafts these while the team builds; all three review them. Include the happy path, missing evidence or tool failure, and the fallback.]
-
-## Owners and interfaces
+## 3. Roles and decisions
 
 | Owner | Responsibility | First deliverable |
 | --- | --- | --- |
-| Mathieu | Facilitate the first ideation discussion, watch the clock, bring useful methods and the global view, draft whole-demo acceptance criteria and scenarios, and coordinate integration | Run a brief check-in every 25 minutes; record the shared MVP decision and the next integration check |
-| Diana | Frontend, live demo, pitch story, and lead for shared documents and repository coordination | Keep the shared docs and `main` coherent; agree on the MVP interface with Damiens |
+| Mathieu | Facilitate ideation and scope discussions; explore feature options and research questions from the brief; track time and integration; draft feature and whole-product acceptance criteria; support frontend or backend coding on agreed, bounded tasks | Bring evidence and options to the shared MVP decision; record the next integration check and help with the current build blocker |
+| Diana | Frontend, live demo, pitch story, KBC Trusted AI review, and lead for shared documents and repository coordination | Keep the shared docs and `main` coherent; bring the trust checklist into MVP and interface decisions with Damiens |
 | Damiens | Backend and integration architecture after MVP selection | Agree with Diana on the challenge-specific interface; keep the backend runnable |
 
-Use one owner per area. Anyone can propose a change; the API owner confirms contract changes before the frontend and backend branches diverge.
+Use one owner per area. Anyone can propose a change. Diana and Damiens agree on any request, response, or error change before their frontend and backend branches diverge. Mathieu can implement a frontend or backend slice after agreeing on the task, files, and interface with the relevant owner; Diana and Damiens keep ownership of their areas.
 
 All three decide the MVP and what is essential versus optional. Keep discussions open and respectful; a check-in should surface concerns and help the team make the next decision, not turn into a status ceremony.
 
 If someone finishes early, they help with the current blocker, integration, testing, or the demo. Agree on the backup for each critical task at the first check-in. Diana leads the shared documents and repository while working remotely; branch ownership and merges are coordinated through GitHub.
 
-## Four-hour working plan
-
-Use this as a flexible budget from the moment the challenge is released. Confirm the actual deadline, pitch slot, and rules first. Mathieu facilitates a short check-in about every 25 minutes; the team changes the plan together when needed.
-
-| Time | Team action | Exit check |
-| --- | --- | --- |
-| 0–20 min | Read the brief; identify problem, user, data, constraints, AI role, decision or action, value, and judging criteria. Ask for clarification where needed. | Everyone can state the same problem. |
-| 20–40 min | Generate a few options; all three select the smallest useful MVP and mark essential versus optional. | One user journey, success criterion, cut line, and demo path. |
-| 40–60 min | Diana and Damiens agree on the interface and a sample JSON exchange for this MVP. Choose the simplest architecture and integration boundary. | Both can build independently against the same example. |
-| 60–150 min | Build the smallest end-to-end path, integrate early, and cut optional work when needed. Mathieu drafts whole-demo checks. | A visible UI → backend → result path runs. |
-| 150–195 min | Run acceptance scenarios, fix integration issues, and check the fallback. | The main demo path and one failure path work. |
-| 195–240 min | Freeze features, rehearse Diana's pitch, answer likely jury questions, and submit. | The exact demo and submission path have been run. |
-
-The timeboxes are prompts to make decisions, not deadlines for perfect code. Keep a protected final buffer for testing and the demo.
-
-## Technical preparation and integration
-
-Before the event, each person makes the current generic starter run locally. The existing `/api/ask` route and mock response prove only that a React frontend can call a Flask backend. They are not the future product contract. A fallback may be a fixed response matching the **chosen** MVP's interface, created after the brief so frontend and backend can work independently.
-
-Agree on a few conventions now: JSON over HTTP for the local UI/backend boundary; one concrete request and response example after MVP selection; explicit errors and loading states; names that match the chosen domain; server-side credentials in local `.env` only; and a short integration check after every merge. Keep `.env.example` to variable names and placeholders.
-
-Choose tools from the actual need and event permissions. Retrieval, calculation, model calls, or external APIs are options, not a preparation checklist to implement. For each selected tool, record its input, output, failure behavior, and what the demo will show. Never put API keys in the browser or commit them.
-
-## Testing, trusted AI, and demo
-
-Mathieu drafts whole-demo acceptance criteria as the team builds; all three review and run them. Test the main user journey, invalid or missing input, a tool/model failure if applicable, and the fallback. Check what evidence supports each important claim in the demo.
-
-Before showing anything as trusted AI, ask: Are we using allowed data? Are claims grounded or clearly uncertain? Are consequential actions approved by the user? Are secrets kept private? Can a person review or stop the action? Does the system show what happened when a tool fails? Apply the checks that fit the released challenge.
-
-Diana's pitch follows **problem → why this approach → live three-step demo → user value → limitation or next step**. Prepare short answers to likely jury questions: why this problem, what is new, where the data came from, what works live, how safety is handled, and what would be needed in production.
-
-## Repository workflow
+## 4. Git and communication
 
 ```text
 main             always demoable
@@ -76,6 +58,8 @@ feat/pitch       Diana's pitch story
 ```
 
 We will not use pull requests. Each owner pulls the latest `main`, works on their own branch, makes small commits, and pushes that branch. Diana coordinates repository changes and names the integrator for each merge. The integrator merges one branch at a time into `main` locally, runs the full demo check, then pushes `main`. Everyone pulls `main` again after a merge. Avoid simultaneous edits to the same file and do not force-push shared branches.
+
+When Mathieu helps with frontend or backend code, agree with Diana or Damiens on the branch and exact files first. The area owner reviews the result before integration, so support work does not create competing edits.
 
 ```bash
 git switch main
@@ -93,108 +77,100 @@ git merge --no-ff origin/feat/my-task
 git push origin main
 ```
 
-Put decisions and current blockers here, not across chat threads. Give coding agents one bounded task, exact files, expected behavior, and a verification command. Integrate their output yourself.
+Record decisions and current blockers in the [day-of guide](WORKFLOW_TEMPLATE.md), so remote teammates see the same plan. Give coding agents one bounded task, exact files, expected behavior, and a verification command. Review and integrate their output yourself.
 
 Before the event: each person clones the shared remote, runs both services, sends a request, opens the UI, and proves Git push access by pushing their own branch. Keep `.env` private and use `.env.example` for names only.
 
-+The KBC track is confirmed; Kate 3.0 is a working hypothesis until the brief arrives. These notes help us understand the context, not choose a solution in advance.
+## 5. Technical working flow
 
-## Source notes
+Before the event, each person makes the current generic starter run locally. The existing `/api/ask` route and mock response prove only that a React frontend can call a Flask backend. They are not the future product contract. A fallback may be a fixed response matching the **chosen** MVP's interface, created after the brief so frontend and backend can work independently.
 
-| Status | What we know | Source / implication |
+Agree on a few conventions now: JSON over HTTP for the local UI/backend boundary; one concrete request and response example after MVP selection; explicit errors and loading states; names that match the chosen domain; server-side credentials in local `.env` only; and a short integration check after every merge. Keep `.env.example` to variable names and placeholders.
+
+Choose tools from the actual need and event permissions. Retrieval, calculation, model calls, or external APIs are options, not a preparation checklist to implement. For each selected tool, record its input, output, failure behavior, and what the demo will show. Never put API keys in the browser or commit them.
+
+After choosing the MVP, work through this small technical loop:
+
+1. Diana and Damiens write one example request, success response, and failure response for the chosen journey. They agree on who changes the interface if the example must change.
+2. Each builds against that same example. A temporary mock can let the UI or backend advance independently; label it and replace or explicitly retain it for the demo.
+3. Connect the first UI → backend → visible result path early. Check the actual request and response, loading and error states, and the selected tool's failure behaviour.
+4. After each merge, run the journey again on `main`. If the interface or scope changes, tell the other owner and update the example and acceptance checks before continuing.
+
+Diana brings the [working KBC Trusted AI checklist](PREPARATION.md#10-kbc-trusted-ai-checklist) into the interface discussion. For the selected MVP, decide what the UI must show about sources, uncertainty, consent or approval, and failures; Damiens checks what the backend can support. Treat any trust or data rule in the released brief as mandatory. The preparation checklist is a prompt, not a claim that we have the official KBC policy.
+
+## 6. From brief to MVP
+
+1. **Understand before choosing:** Read the exact brief, rules, judging criteria, available data, and constraints, including any KBC Trusted AI requirements. Diana highlights relevant trust questions. State the user and problem in one sentence. Mark facts and assumptions separately.
+2. **Explore briefly:** Generate at most three ideas. Sketch the user's journey for each in 3–5 steps, from their starting situation to a useful result. Check each against the brief, customer value, available evidence, and four-hour feasibility.
+3. **Define the solution vision together:** For the strongest idea, describe the mature user experience, the distinctive mechanism, customer and KBC value, a possible measure of success, and the data, trust, or integration needs for real use. Keep this to a short vision card; mark unknowns. This is the proposed solution, not a claim that it is built.
+4. **Choose the four-hour proof:** Select one MVP journey that demonstrates the most important part of that vision. Write its promise and **cut line**: Must-have capabilities above it; optional improvements and explicit exclusions below it. If removing a feature does not break the MVP promise, it is not a Must-have.
+5. **Split vertically:** Build the smallest end-to-end slice that shows the journey: UI input → backend or selected tool → visible result. Diana and Damiens agree on one example request and response so they can work in parallel and connect their parts early. Keep a challenge-specific fallback if an external dependency fails.
+6. **Agree on proof:** Mathieu drafts checks for each Must-have feature and for the complete product journey; all three review them before the build goes far. The [acceptance-criteria guide](docs/ACCEPTANCE_CRITERIA.md) explains the two levels and provides a run sheet. Criteria are agreed early; the product is accepted for the demo only after the feature and whole-product checks pass on the current integrated build.
+
+**Quick ideation:** Give everyone a short silent moment to write one user problem and possible approach. Share the ideas in turn without debating each one immediately; combine overlaps, then keep at most three candidates. Use the [innovation lenses](docs/IDEAS.md#ten-innovation-lenses) only if the group needs a prompt.
+
+**Choose a direction after ideation:** Reject an idea that misses the brief, relies on forbidden or unavailable data, or cannot show a useful result in time. Compare the remaining ideas on user value, a distinctive capability, demo clarity, feasibility, and fit with the brief. Record the reason and key uncertainty; the three of us decide together, using the actual judging criteria when available.
+
+**Select the MVP within that direction:** Identify a possible end-to-end journey for the chosen product vision and compare alternatives only if the scope is disputed or unclear. Choose the smallest journey that proves its central claim with available data, a visible result, and a feasible integration path. Define its promise and Must-have features; place everything else below the cut line. All three agree on what the four-hour product will actually do and what its demo can honestly claim.
+
+**Scope and capability gate:** Mark each proposed feature or requirement Must, Should, Could, or Won't. A Must is needed for the promised journey or a mandatory rule; the others stay below the cut line. For any proposed AI or technical capability, ask: Which user step needs it? What input can we actually use? What result will we demonstrate? What happens when it fails? If the answer is unclear, leave it out of the four-hour product.
+
+**Practice example — document-status assistant:** Suppose our chosen MVP promise were “a customer can check a sample application and understand which document is missing, or see that its status cannot be verified.” This is fictional; it is not a choice for the real challenge. It matches the [worked acceptance-criteria example](docs/ACCEPTANCE_CRITERIA.md#worked-example--fictional-document-status-brief).
+
+| Priority | Proposed product capability | Why it belongs here |
 | --- | --- | --- |
-| Confirmed | The Tectonic hackathon has a KBC track. Preselection is 30 September, 18:00–23:00; the final is 20 October. Registration closes 29 September. | [Tectonic hackathon](https://www.tectonicconf.eu/hackathon). Confirm registration and location for all three teammates. |
-| Confirmed | Kate already uses generative AI. KBC describes future Kate as more personalised and proactive and says it is exploring agentic AI with explicit customer approval. | [KBC, Kate: five years and five milestones](https://newsroom.kbc.com/kate-five-years-and-five-milestones). A proposal needs a concrete capability and outcome beyond adding a model to chat. |
-| Confirmed | Kate already supports banking and insurance questions, practical help, and other services within KBC Mobile. | [KBC 2025 annual report, people and technology](https://www.kbc.com/content/dam/kbccom/doc/investor-relations/Results/jvs-2025/csr-vas-2025-en.pdf). Check existing functions before claiming an idea is new. |
-| Hypothesis | The KBC case may concern Kate 3.0. | The public hackathon page names KBC but does not state the exact case. Replace this hypothesis with the released brief. |
+| **Must** | Compare the sample application's required and received documents; show the missing document and a clear next step. Show an honest unavailable state if the check fails. | Without these, the promised journey gives no reliable answer. Any mandatory brief or event rule is also Must. |
+| **Should** | Explain which requirement makes that document necessary. | Helpful for trust and understanding, but the customer can still see what is missing and what to do next. If the real brief requires this explanation, move it to Must. |
+| **Could** | Let the customer upload the document from the same screen. | Convenient, but it does not improve the core proof enough to justify building it before the journey works. |
+| **Won't** | Fetch real customer records or submit a live application. | Outside the fictional four-hour MVP; the demo uses invented records and makes no live action. |
 
-When adding a source, record its date, the claim it supports, and whether the claim is confirmed or inferred. Keep customer data and event-provided material out of public notes unless the rules allow it.
+To test the **Must / Should boundary**, remove the capability and ask whether the agreed promise or a mandatory constraint now fails. If yes, it is Must. If the promise still works but the experience is materially better with it, it is Should. Recheck the boundary together after reading the real brief; do not promote a feature to Must just because it is impressive or technically interesting.
 
-### KBC signals found by Diana
+**Business value and KPI questions for the KBC track:** KBC describes Kate and KBC Mobile in terms of making banking and insurance easier, saving customers time and money, helping with complex decisions, and directing complex cases to colleagues. These are [public context](https://newsroom.kbc.com/kate-five-years-and-five-milestones), not the hidden challenge or its judging criteria. After reading the brief, ask:
 
-These five themes are research leads, not predictions of the hidden case or implementation tasks. A vacancy shows work inside KBC; it does not tell us what the hackathon brief will ask.
+1. Which KBC customer or employee is affected, and what do they do today in Kate, KBC Mobile, KBC Live, a branch, or another relevant channel? Do not assume the challenge concerns Kate.
+2. What concrete friction improves: time to a useful answer or action, completion, accuracy, avoidable rework, timely intervention, or quality of human handoff? What does KBC already offer, and what changes beyond it?
+3. What is the customer benefit **and** the KBC benefit? Could it improve service quality, free colleagues for complex work, reduce preventable risk, or strengthen a relevant customer relationship? Do not claim financial return without evidence.
+4. If KBC tested the future product, which **one primary outcome KPI** would show that the user is better off? Define the population, event counted, denominator, and time period; ask whether a current baseline exists. Choose a safety or quality guardrail if optimizing the primary KPI could cause harm.
+5. What can the four-hour MVP actually demonstrate as a **proxy** for that outcome? Name the sample input, observable result, and limitation. Keep the demo proof separate from any unmeasured real-world KPI.
 
-| Theme | What the linked KBC source supports | Rehearsal probe / caveat |
+This is a short design-and-build cycle, not a formal Scrum sprint. We borrow the useful habits of shared decisions, visible work, early integration, and adapting to evidence. We do not assign Scrum titles or run its formal events.
+
+## 7. Work rhythm and checkpoints
+
+Use this as a flexible budget from the moment the challenge is released. Confirm the actual deadline, pitch slot, and rules first. Mathieu facilitates a short check-in about every 25 minutes; the team changes the plan together when needed.
+
+| Time | Team action | Exit check |
 | --- | --- | --- |
-| Customer intent and next action | The indexed [Kate Intent Factory vacancy](https://www.kbc.be/jobs/nl/vacatures/ID89573.html) describes detecting a customer's likely intent from relevant data and selecting suitable communication. That page currently returns 404; a [KBC Global Services job posting](https://cz.linkedin.com/jobs/view/data-engineer-at-kbc-global-services-4420412769) also names the project. Preserve this as a lead to recheck. | Mock a life-event signal, explain the evidence, and compare possible next actions. Lenses: detection, context, decision. |
-| AI quality for Kate | The [AI Prompt Engineer vacancy](https://www.kbc.be/jobs/nl/vacatures/ID90924.html) explicitly covers testing prompts and improving the correctness, consistency, usefulness, speed, and reliability of Kate's AI output. | Build a small quality gate that checks evidence, uncertainty, and escalation. Lenses: control and verification. |
-| Customer onboarding | The [Customer Handling role](https://www.kbc.be/jobs/nl/vacatures/ID90503.html) says onboarding must balance customer experience, compliance, and operational efficiency. It does not specify an AI onboarding project. | Mock missing-information detection and a review path. Lenses: orchestration, context, verification. |
-| Customer documents | The [internship listing](https://www.kbc.be/jobs/nl/stages/ID91001.html) says KBC handles hundreds of thousands of customer documents monthly through several applications and AI-supported solutions. The internship itself concerns Java test automation for a coordinating application. | Mock extraction, conflicting facts, and routing, without claiming this is KBC's requested project. Lenses: knowledge, system coordination, verification. |
-| Fraud and social engineering | KBC's [Guardian Angel announcement](https://newsroom.kbc.com/kbc-brings-guardian-angel-to-more-than-4-million-customers-in-belgium) describes a live trusted-person review for suspicious payments. KBC says its detection system checks more than 150 signals and 700 patterns. | Explore an extension that explains or verifies a risk; do not pitch Guardian Angel itself as new. Lenses: detection, human coordination, verification. |
+| 0–20 min | Read the brief; identify problem, user, data, constraints, AI role, decision or action, value, and judging criteria. Ask for clarification where needed. | Everyone can state the same problem. |
+| 20–40 min | Generate a few options; all three choose one direction and describe its solution vision and expected value. | A clear problem, future user outcome, distinctive mechanism, and key unknowns. |
+| 40–60 min | Choose the smallest MVP proof and cut line; agree on Must-have feature and product checks. Diana and Damiens agree on the interface and a sample JSON exchange. | The team knows what to prove; Diana and Damiens can build against the same example. |
+| 60–150 min | Build and integrate the smallest end-to-end path early. Run relevant scenarios as parts connect; cut optional work when needed. | A visible UI → backend → result path runs. |
+| 150–195 min | Run Must-have feature checks and whole-product scenarios on the current integrated build, fix failures, and check the fallback. | The main demo path and one relevant failure path work. |
+| 195–240 min | Freeze features, rehearse Diana's pitch, answer likely jury questions, and submit. | The exact demo and submission path have been run. |
 
-When the brief arrives, match its wording against these themes. If none fits, set them aside and start from the actual user problem.
+The timeboxes are prompts to make decisions, not deadlines for perfect code. Keep a protected final buffer for testing and the demo.
 
-## Ten innovation lenses
+Keep one small shared task board in the [day-of guide](WORKFLOW_TEMPLATE.md): **To do → In progress → Integrated → Verified**. A task is integrated when it works with the other parts; it is verified when its relevant scenario passes. Give each active task one owner and a visible "done when" condition. Limit work in progress so the team finishes the main journey before adding features.
 
-These are ways to generate and assess ideas, not ten separate features to build.
+At each short check-in, ask: **What works now? What is blocked? What is the next smallest visible improvement?** Mathieu watches the time and records the next decision; the team makes scope changes together. If a blocker persists for about 15 minutes, agree on a simpler path or the MVP-specific fallback rather than letting integration wait. Update the criteria and pitch when the MVP promise changes.
 
-| Lens | Capability question |
+## 8. Acceptance and jury story
+
+Mathieu drafts feature and whole-product acceptance criteria after MVP selection; all three review and run them. Check each Must-have feature, then the main user journey, invalid or missing input, a tool/model failure if applicable, and the fallback. Check what evidence supports each important claim in the demo. Use the [run sheet](docs/ACCEPTANCE_CRITERIA.md#run-sheet--copy-after-the-brief) to record the actual result and the owner of a fix.
+
+Use Diana's [working KBC Trusted AI checklist](PREPARATION.md#10-kbc-trusted-ai-checklist) when choosing the MVP, agreeing on the interface, writing acceptance criteria, and rehearsing the pitch. Ask: Are we using allowed and necessary data? Are claims grounded or clearly uncertain? Could the result create unfairness? Are consequential actions approved by the user? Can a person review or stop the action? Are secrets protected and failures visible? Turn relevant answers into feature or whole-product checks. Apply any official KBC or event rules supplied with the brief first.
+
+Diana's pitch should answer three jury questions in plain language:
+
+| Question | What we need to make clear |
 | --- | --- |
-| Calculation & Simulation | Can Kate predict, optimize, compare scenarios, or model consequences? |
-| Data Representation & Knowledge | Can it understand relationships among people, products, events, and constraints? |
-| Decision & Trade-offs | Can it help choose between actions, goals, risks, and future outcomes? |
-| Orchestration & Planning | Can it break a goal into steps, use tools, and revise a plan? |
-| Data Fusion & Context | Can it combine sources and select what matters now? |
-| Memory & Adaptation | Can it retain useful state and adapt with the customer's knowledge and control? |
-| Detection & Proactivity | Can it surface a relevant risk or opportunity before being asked? |
-| Programmability & Composition | Can users express rules or combine capabilities into a workflow? |
-| System Coordination | Can it coordinate several services or teams toward one outcome? |
-| Control & Verification | Can it validate results, explain causes, and check that an action worked? |
+| **What could this become at KBC?** | The user, their problem, the future experience, customer and KBC value, and what real deployment would require. |
+| **Where is the innovation?** | The specific capability or mechanism that changes the outcome compared with today's approach, not merely the presence of AI. |
+| **What did we prove in four hours?** | One live, end-to-end journey with a visible result and the agreed acceptance checks. Say which inputs, tools, or actions are simulated and which limits remain. |
 
-## Challenge-decomposition method
+Lead with the **user problem and solution vision**. Use the four-hour MVP as a focused proof that one important mechanism or journey can work, then explain what would be needed to expand it. State clearly what is live, what is simulated, and what is future work. The time limit is the event format; we do not assume that implementation speed itself is a judging criterion. Adapt the balance of vision, demonstration, and technical detail to the actual brief, jury instructions, and pitch time when announced.
 
-Use [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md) as the fillable decision board once the brief arrives. [IDEAS.md](IDEAS.md) can prompt discussion if relevant, but no idea there is a preselected solution.
+Mathieu prepares the business spine for Diana's pitch: **user and current pain → future KBC product → innovation → live proof → customer and KBC value with a possible KPI → limitation and next step**. Diana shapes and delivers the story. “It works” means the demonstrated slice passes its agreed checks on the current build; it does not mean the full future product is production-ready. Prepare short answers on why this problem, where the data came from, how safety and customer control work, and what would be needed to deploy it.
 
-1. Pick one customer situation and one measurable problem. Write it without naming a technology.
-2. Generate several ideas by combining two or three lenses. For each idea, describe the sequence: **trigger → context/evidence → options → customer-approved action → verification**.
-3. Fill in one idea card per candidate. Reject ideas that only add a response or UI feature without changing the customer's outcome.
-4. Compare candidates on customer value, capability leap, evidence/data availability, feasibility for a working demo, and fit with the released brief. Mark unknowns rather than guessing.
-5. After all three agree on the MVP, choose the smallest end-to-end proof and its integration fallback. Design the data, interface, and architecture for that proof.
-
-### Idea card
-
-| Question | Draft answer |
-| --- | --- |
-| Who is the user, and what triggers the need? | [ ] |
-| What decision or action is difficult today? | [ ] |
-| Which innovation lenses combine here? | [ ] |
-| What context and evidence are needed, and where would they come from? | [ ] |
-| What options, trade-offs, or forecast will Kate show? | [ ] |
-| What action requires customer approval? | [ ] |
-| How will Kate verify the outcome and handle failure? | [ ] |
-| What measurable customer benefit would the demo show? | [ ] |
-| What are the three visible demo steps and the fallback for this MVP? | [ ] |
-
-## Hackathon research note
-
-A [study of 32 hackathon winners and five organizers](https://arxiv.org/html/2206.04744v1) found a recurring sequence: explore and define a real user problem, consider alternative solutions, then deliver a demonstrable prototype and clear pitch. The authors recommend checking rules, judging criteria, and existing solutions. These are interview findings, not a causal formula for winning. A separate [corporate hackathon case study](https://research.tue.nl/en/publications/utilizing-hackathons-to-foster-sustainable-product-innovation-the/) associated project continuation with focused preparation, a functioning prototype, current-customer fit, and ease of integration. Its outcome was continuation after the event, not a hackathon prize. The decision board applies these ideas to the team's four-hour working budget.
-
-
-## Current preparation checklist
-
-- [x] Local repository and baseline mock vertical slice
-- [ ] Confirm access to `git@github.com:541l0r/tectonic2026.git` for each teammate
-- [x] Publish the starter on `main`
-- [ ] Each teammate clones, runs both services, and pushes their own branch
-- [ ] Confirm challenge rules, allowed tools/data, presentation time, and submission format from the organizer
-- [ ] Confirm registration, location, schedule, and case-release process with the organizer
-- [ ] Agree on Git ownership, backups, JSON/error conventions, and the integration check
-- [ ] Diana and Damiens agree on generic interface conventions while leaving the MVP contract open
-- [ ] Review the trusted AI questions, acceptance-criteria template, and demo outline above
-- [ ] Diana prepares a reusable three-step demo and pitch outline
-- [ ] Decide model/provider, data, architecture, and deployment only after the brief and event constraints are known
-- [ ] All three walk through [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md) together without committing to an invented solution
-
-## Day-of log
-
-**Brief:** [Paste exact wording or link.]
-
-**Chosen idea and reason:** [One sentence.]
-
-**Current demo status:** [Working / blocked; link or command.]
-
-**Next three actions:** 1. [owner + action] 2. [owner + action] 3. [owner + action]
-
-**Risks and fallback:** [What could break; what fallback proves the chosen MVP's useful result.]
-
-**Pitch (Diana):** [Problem → insight → working demo → measurable benefit.]
+Background research and idea prompts: [IDEAS.md](docs/IDEAS.md). Before-event tasks: [PREPARATION.md](PREPARATION.md). Fill the live decisions and statuses in [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md).
