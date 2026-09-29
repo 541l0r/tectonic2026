@@ -2,7 +2,11 @@
 
 This is the live worksheet for the challenge. Fill it in step by step after the real brief arrives; leave unknown answers blank and mark assumptions. [COMMAND.md](COMMAND.md) explains the method to the team beforehand. The team changes the plan when evidence or time changes. The public preselection window is 18:00–23:00 on 30 September; the working plan budgets four hours and must be adjusted to the actual rules.
 
-## 1. Capture and define the problem (minutes 0–20)
+## 1. Capture and define the problem
+
+Mathieu leads the [opening ideation method](docs/IDEATION_METHOD.md); use this section to record its first exit check.
+
+**Target: 00:00–00:10.** Each person writes a problem statement before the team compares them.
 
 | Item | Answer |
 | --- | --- |
@@ -14,40 +18,52 @@ This is the live worksheet for the challenge. Fill it in step by step after the 
 | Submission format and deadline | [ ] |
 | Unknowns to ask the organizer | [ ] |
 
-**One-sentence problem:** [ ]
+**Individual problem statements before discussion (Mathieu / Diana / Damiens):** [ ] / [ ] / [ ]
+
+**Agreed one-sentence problem:** [ ]
+
+**Why the shared statement above was chosen; any unresolved difference:** [ ]
 
 **Facts versus assumptions:** [List both; mark each assumption for validation.]
 
 **Existing KBC solution or process to improve:** [ ]
 
-## 2. Create at most three candidate ideas (minutes 20–35)
+## 2. Brainstorm and turn ideas into concepts
 
-Use the [global idea list and ten lenses](docs/IDEAS.md) only as prompts when relevant. Ask a mentor or organizer to clarify a material unknown when possible. Fill one row per candidate.
+Write a word or short phrase on each post-it, then brainstorm together. Afterward, group duplicates and keep distinct angles visible. All three can still add or combine ideas while discussing preferences. Give each shortlisted candidate one clear concept sentence here; assess its demo, data, and feasibility in section 3. Use the [global idea list and ten lenses](docs/IDEAS.md) only as prompts when relevant. Ask a mentor or organizer to clarify a material unknown when possible.
 
-| Idea | User outcome | Combined lenses | Evidence/context | Customer-approved action | Three visible demo steps |
-| --- | --- | --- | --- | --- | --- |
-| A | [ ] | [ ] | [ ] | [ ] | [ ] |
-| B | [ ] | [ ] | [ ] | [ ] | [ ] |
-| C | [ ] | [ ] | [ ] | [ ] | [ ] |
+**Numbered groups / angles (or attach a photo of the wall):** [ ]
 
-## 3. Choose a product direction and describe the vision (by minute 40)
+**Initial preferences and reasons (Mathieu / Diana / Damiens):** [ ] / [ ] / [ ]
 
-1. Cross out any idea that misses the brief, needs forbidden or unavailable data, or cannot show a useful result in the available time. Record the reason.
-2. Compare the remaining ideas in the table. Record the evidence and main uncertainty for each. If scores help the discussion, use 0–2 per column (0 = weak, 1 = plausible, 2 = strong); do not choose by total alone.
-3. Let each teammate say which idea they favour and what concerns them. Decide on one direction together, using the actual judging criteria when available. Record the reason and any unresolved concern.
-4. Describe the future product vision for that direction. Do not decide its four-hour scope yet.
+**Provisional shortlist order (#1, #2, optional #3) and any disagreement:** [ ]
 
-| Idea | Customer value | Capability leap | Clear demo | Buildable today | KBC fit / integration | Total / 10 | Key uncertainty |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| A | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
-| B | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
-| C | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
+| Candidate | One-sentence concept: user, outcome, main approach | Complementary ideas combined |
+| --- | --- | --- |
+| A | [ ] | [ ] |
+| B | [ ] | [ ] |
+| C | [ ] | [ ] |
 
-**Chosen idea and reason:** [ ]
+## 3. Choose the KBC product concept and outline its vision
+
+Choose the concept that will be the basis of the **proposed future KBC product**. Describe what that product could eventually do for its user. This is a product proposal, not the four-hour prototype or a claim that KBC has adopted it.
+
+1. Cross out any concept that misses the brief or needs forbidden data. Record the reason. A concept can remain even if its full product cannot be built in four hours, provided one important part can be proved.
+2. Compare the remaining concepts in the table. Record the future customer benefit, how the product would work, KBC fit, what could be proved, and the main uncertainty. The provisional shortlist order does not select the product.
+3. Let each teammate defend a preferred concept and state a concern. Choose the concept for the proposed future KBC product together, using the actual judging criteria when available. Record the reason and any unresolved concern.
+4. Before selecting the four-hour proof, state the full product's intended user experience, distinctive mechanism, customer and KBC value, and main data or trust dependency in the short vision below. Add depth later for the pitch without changing what the prototype claims to prove.
+
+| Concept | Future customer benefit and mechanism | Brief / KBC fit | One important claim we could prove | Main dependency or uncertainty |
+| --- | --- | --- | --- | --- |
+| A | [ ] | [ ] | [ ] | [ ] |
+| B | [ ] | [ ] | [ ] | [ ] |
+| C | [ ] | [ ] | [ ] | [ ] |
+
+**Chosen future KBC product concept and reason:** [ ]
 
 **Team agreement:** [What each of Mathieu, Diana, and Damiens thinks is essential; note any concern.]
 
-**Solution vision (what the mature product would do, not what we claim to build today):**
+**Proposed KBC product vision (the full intended use, separate from the four-hour proof):**
 
 | Question | Team answer |
 | --- | --- |
@@ -57,9 +73,9 @@ Use the [global idea list and ten lenses](docs/IDEAS.md) only as prompts when re
 | What one outcome KPI would show user improvement in real KBC use (population, event, denominator, period)? Is there a baseline and a safety/quality guardrail? | [ ] |
 | What data, permissions, trust controls, integrations, or operations would real use require? What remains unknown? | [ ] |
 
-## 4. Select the MVP within that direction (by minute 60)
+## 4. Select the four-hour proof within that product concept
 
-The direction above is one product idea. Now choose **which part of that product** to build and prove in four hours. Start with one end-to-end journey; compare another scope only if the choice is unclear or contested. These are possible MVP scopes for the same direction, not another round of ideation.
+The selected concept above describes the proposed future KBC product. Now choose **one small part of that product** to build as the hackathon proof of concept (MVP). The prototype must show evidence for one important claim about the product; it does not have to implement the full vision. Start with one end-to-end journey; compare another scope only if the choice is unclear or contested. These are possible proof scopes for the same product concept, not another round of ideation. **Mathieu's facilitated discussion runs from about 00:10 to 00:40.** At the interface handoff, the minimum is the chosen product concept, one proof journey, a sample input, and a visible result. Complete the remaining worksheet fields as work progresses. Diana and Damiens then agree on the immediate UI/API example and start coding.
 
 1. State the one user outcome and central claim the prototype needs to prove. Include any mandatory requirement from the brief.
 2. For each journey considered, name its starting input, the user action, the visible result, the data or tool it needs, and its main build or integration risk. Cross out a journey that cannot work with allowed inputs or fit the remaining time.
@@ -106,7 +122,7 @@ The direction above is one product idea. Now choose **which part of that product
 
 | Checkpoint | Decision to record | Owner |
 | --- | --- | --- |
-| By minute 60 | Have Diana and Damiens agreed on the MVP's request/response example and integration boundary? | Diana + Damiens |
+| At the first coding task | Have Diana and Damiens agreed on the MVP's request/response example and integration boundary? | Diana + Damiens |
 | During the build | Is the UI → backend → visible result working? If no, cut optional scope until it is. | Diana + Damiens |
 | After the first working slice | Does one mechanism prove the capability leap (tool, retrieval, calculation, or coordination)? If no, agree on the strongest one. | All three |
 | Every 25 minutes | What works, what is blocked, how is everyone doing, and what is the next smallest visible improvement? Mathieu keeps this brief and tracks time; the team decides scope changes. If a blocker persists 15 minutes, use the mock boundary and move on. | Mathieu facilitates; all three decide |

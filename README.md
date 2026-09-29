@@ -1,6 +1,6 @@
 # Tectonic starter
 
-Open [COMMAND.md](COMMAND.md) for the team working method; [IDEAS.md](docs/IDEAS.md) for research leads, innovation lenses, and rehearsal ideas; [PREPARATION.md](PREPARATION.md) for before-event tasks and the working Trusted AI checklist; and [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md) for the fillable day-of guide. This starter proves that a frontend can render structured assistant output from a mock API. It is a preparation exercise, not a claim about KBC's actual systems or the event challenge.
+Open [COMMAND.md](COMMAND.md) for the team working method; [IDEATION_METHOD.md](docs/IDEATION_METHOD.md) for the opening idea-to-concept process; [IDEAS.md](docs/IDEAS.md) for research leads, innovation lenses, and rehearsal ideas; [PREPARATION.md](PREPARATION.md) for before-event tasks and the working Trusted AI checklist; and [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md) for the fillable day-of guide. This starter proves that a frontend can render structured assistant output from a mock API. It is a preparation exercise, not a claim about KBC's actual systems or the event challenge.
 
 ## Run
 

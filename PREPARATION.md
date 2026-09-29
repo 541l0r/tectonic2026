@@ -83,14 +83,14 @@ If AI is involved:
 
 ### Before Wednesday
 
-- [ ] Prepare a lightweight ideation method.
-- [x] Prepare a fast MVP-selection method ([general rule](COMMAND.md#6-from-brief-to-mvp) and [day-of selection template](WORKFLOW_TEMPLATE.md#4-select-the-mvp-within-that-direction-by-minute-60)).
-- [x] Define Must / Should / Could / Won't criteria ([definitions, boundary test, and worked example](COMMAND.md#6-from-brief-to-mvp); [day-of fields](WORKFLOW_TEMPLATE.md#4-select-the-mvp-within-that-direction-by-minute-60)).
+- [x] Prepare a lightweight ideation method ([opening method](docs/IDEATION_METHOD.md) and [day-of decision board](WORKFLOW_TEMPLATE.md#2-brainstorm-and-turn-ideas-into-concepts)).
+- [x] Prepare a fast MVP-selection method ([general rule](COMMAND.md#6-from-brief-to-mvp) and [day-of selection template](WORKFLOW_TEMPLATE.md#4-select-the-four-hour-proof-within-that-product-concept)).
+- [x] Define Must / Should / Could / Won't criteria ([definitions, boundary test, and worked example](COMMAND.md#6-from-brief-to-mvp); [day-of fields](WORKFLOW_TEMPLATE.md#4-select-the-four-hour-proof-within-that-product-concept)).
 - [x] Prepare a simple acceptance-criteria template ([method, worked example, and run sheet](docs/ACCEPTANCE_CRITERIA.md)).
-- [x] Prepare business-value / KPI questions ([KBC-track questions](COMMAND.md#6-from-brief-to-mvp) and [day-of KPI fields](WORKFLOW_TEMPLATE.md#3-choose-a-product-direction-and-describe-the-vision-by-minute-40)).
+- [x] Prepare business-value / KPI questions ([KBC-track questions](COMMAND.md#6-from-brief-to-mvp) and [day-of KPI fields](WORKFLOW_TEMPLATE.md#3-choose-the-kbc-product-concept-and-outline-its-vision)).
 - [x] Review how Prelint could support requirements/specification checking ([review and decision](docs/PRELINT.md)); connect the eventual check to the acceptance criteria.
 - [x] Prepare the product/business structure for the final pitch ([jury questions and business story](COMMAND.md#8-acceptance-and-jury-story); [day-of proof checks](WORKFLOW_TEMPLATE.md#6-final-proof)).
-- [x] Define how we quickly decide which capabilities are relevant to the challenge ([scope and capability gate](COMMAND.md#6-from-brief-to-mvp); [MVP selection steps](WORKFLOW_TEMPLATE.md#4-select-the-mvp-within-that-direction-by-minute-60)).
+- [x] Define how we quickly decide which capabilities are relevant to the challenge ([scope and capability gate](COMMAND.md#6-from-brief-to-mvp); [MVP selection steps](WORKFLOW_TEMPLATE.md#4-select-the-four-hour-proof-within-that-product-concept)).
 
 ### During the Hackathon
 
@@ -515,133 +515,29 @@ Rule:
 
 ---
 
-# 12. Earlier timebox draft — reconcile before Wednesday
+# 12. Four-hour working rhythm
 
-This section records an earlier schedule. The current working method and day-of timing are in [COMMAND.md](COMMAND.md) and [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md). Before the event, agree on one schedule; in particular, integrate the first working slice early rather than waiting until 02:30.
+Confirm the actual deadline, pitch slot, and rules when the challenge is released. The opening has one handoff target: **about 40 minutes to reach the interface discussion**. Move sooner when the team is ready; resolve a material rule or data question before committing to a dependent build. The [opening method](docs/IDEATION_METHOD.md) and [day-of guide](WORKFLOW_TEMPLATE.md) hold the detailed prompts.
 
 ## 00:00–00:10 — Understand
 
-All three:
+All three read the brief individually and each writes a one-sentence user problem. Compare the statements, agree on the user, pain, desired outcome, and mandatory constraints, and mark assumptions that need checking.
 
-- Read challenge
-- Identify user
-- Identify problem
-- Identify constraints
+## 00:10–00:40 — Mathieu facilitates ideas to first proof
 
----
+All three write short ideas on post-its, brainstorm freely without criticism, group duplicates while keeping distinct angles, and turn promising ideas into two or three concepts. Discuss them live and choose **one concept as the basis of the proposed future KBC product**. Describe how that complete product would be used and why it would matter. Then choose **one small journey or mechanism** the four-hour prototype can prove, with a sample input and visible result. Mathieu facilitates; Diana and Damiens contribute throughout. The steps inside these 30 minutes have no fixed quotas.
 
-## 00:10–00:20 — Direction
+## From about 00:40 — Interface, then first code
 
-Mathieu leads product/MVP direction.
+Diana and Damiens agree on one request, success result, and failure result for the chosen proof. Begin the first UI → backend/tool → visible result path as soon as that example is clear. Mathieu records the product claim, first Must-have checks, and any unresolved assumption while supporting a bounded build task if needed. Complete the longer vision and worksheet fields as the build proceeds.
 
-Damiens checks:
+## Build and verify throughout
 
-- technical feasibility
-- likely backend complexity
+Connect the first working slice early, run its relevant scenario whenever parts join, and cut optional work when integration is at risk. Check the main journey, a relevant invalid or missing input, and the fallback for a selected service or tool. Track what is integrated and what is verified on the [day-of board](WORKFLOW_TEMPLATE.md#5-build-and-adapt).
 
-Diana checks:
+## Protect the final demo window
 
-- user journey
-- frontend/demo feasibility
-
-Goal:
-
-**Choose one direction quickly.**
-
----
-
-## 00:20–00:30 — Define Interfaces
-
-Mathieu:
-
-- Scope
-- Acceptance criteria
-
-Damiens:
-
-- Data/backend needs
-
-Diana + Damiens:
-
-- Agree frontend/backend contract requirements
-
-Goal:
-
-**Start parallel work by \~30 minutes.**
-
----
-
-## 00:30–02:30 — Parallel Build
-
-### Mathieu
-
-- Product
-- Tests
-- Business value
-- Integration tracking
-- Pitch content
-
-### Damiens
-
-- Backend
-- Data
-- API
-- AI/tool integration
-
-### Diana
-
-- Frontend
-- UX
-- User journey
-- Demo structure
-
----
-
-## 02:30–03:05 — Integration
-
-Connect:
-
-**Frontend ↔ API ↔ Backend ↔ AI/tools**
-
-Fix interface problems.
-
----
-
-## 03:05–03:30 — Testing
-
-Test:
-
-- Normal case
-- Edge case
-- Failure case
-
-Check:
-
-- functionality
-- security
-- explainability
-- human control
-
----
-
-## 03:30–03:50 — Demo & Pitch Rehearsal
-
-No new features unless critical.
-
-Run the exact demo.
-
-Prepare transitions and Q&A.
-
----
-
-## 03:50–04:00 — Emergency Buffer
-
-Only:
-
-- critical bug fixes
-- deployment issues
-- demo fallback
-- submission
+About 45 minutes before the deadline, freeze optional features and verify the exact demo path and fallback. About 30 minutes before, rehearse the pitch, answer likely jury questions, and run the submission path. Use the remaining buffer for critical fixes and submission.
 
 ---
 

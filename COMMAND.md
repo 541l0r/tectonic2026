@@ -4,9 +4,9 @@ Updated: 28 September 2026. This is the method Mathieu can explain to the team b
 
 ## 1. Purpose and shared rules
 
-We arrive knowing how to build together within the four-hour working window. We do not arrive with a chosen solution, database schema, dataset, API contract, or architecture. The existing UI and API are only a generic connectivity check. Once we know the brief, all three choose the smallest useful MVP that solves one concrete user problem and produces a visible result.
+We arrive knowing how to build together within the four-hour working window. We do not arrive with a chosen solution, database schema, dataset, API contract, or architecture. The existing UI and API are only a generic connectivity check. Once we know the brief, all three choose a proposed KBC product concept, then a small working proof of one important part of it.
 
-Our method is **brief → understand the user problem → explore ideas → define the future KBC product vision → choose one hackathon MVP together → build a complete user journey → check it against agreed criteria → demo**. We can revisit an earlier decision when new evidence or time pressure requires it. [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md) is the fillable board for the event; this sheet explains how to use it.
+Our method is **brief → understand the user problem → generate ideas → turn promising ideas into concepts → choose the concept for a proposed future KBC product → choose one small four-hour proof → build, check, and demo that proof**. We can revisit an earlier decision when new evidence or time pressure requires it. [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md) is the fillable board for the event; this sheet explains how to use it.
 
 ## 2. Shared vocabulary
 
@@ -15,9 +15,11 @@ Our method is **brief → understand the user problem → explore ideas → defi
 | Challenge brief | The organizer's actual request, rules, and judging criteria. It takes precedence over our preparation ideas. |
 | User | The specific person whose situation we want to improve. |
 | Useful outcome | What that user can understand, decide, or accomplish with the solution. |
+| Idea | A rough spark on a post-it. It can be a word, a feature, or a possible approach; it need not be complete or feasible yet. |
+| Concept | A promising idea or combination of ideas made clear enough to discuss: user, desired outcome, and main approach. Two or three concepts reach the assessment step. |
 | User journey | The few steps from the user's starting situation to that useful outcome; the demo should make this journey visible. |
-| Future KBC product vision | A clear picture of what the solution could become at KBC: who uses it, the full experience, what is different from today, and the value it could create. |
-| Hackathon product (MVP) | The smallest working version we build and demonstrate in four hours to show one useful outcome. All three choose it after reading the brief. |
+| Selected KBC product concept and vision | The concept we propose as the basis of a future KBC product, plus the fuller experience it could become: who uses it, what differs from today, and the value it could create. Selection is a proposal for the challenge, not a claim that KBC has approved or built it. |
+| Four-hour proof of concept (hackathon MVP) | A small working prototype of one important journey or mechanism from the selected product concept. It demonstrates a claim about the proposed product; it is not the complete future KBC product. |
 | Product scope | What our hackathon product actually lets the user do, the constraints it respects, and what it excludes. A list of screens alone does not define it. |
 | Build tasks | The activities assigned to teammates to create and check the product, such as building a screen, connecting an API, or running a scenario. These are actions by us, not capabilities for the user. |
 | Feature | A capability we might build. It is Must-have only if the MVP promise or journey fails without it. |
@@ -101,17 +103,17 @@ Diana brings the [working KBC Trusted AI checklist](PREPARATION.md#10-kbc-truste
 ## 6. From brief to MVP
 
 1. **Understand before choosing:** Read the exact brief, rules, judging criteria, available data, and constraints, including any KBC Trusted AI requirements. Diana highlights relevant trust questions. State the user and problem in one sentence. Mark facts and assumptions separately.
-2. **Explore briefly:** Generate at most three ideas. Sketch the user's journey for each in 3–5 steps, from their starting situation to a useful result. Check each against the brief, customer value, available evidence, and four-hour feasibility.
-3. **Define the solution vision together:** For the strongest idea, describe the mature user experience, the distinctive mechanism, customer and KBC value, a possible measure of success, and the data, trust, or integration needs for real use. Keep this to a short vision card; mark unknowns. This is the proposed solution, not a claim that it is built.
+2. **Explore and form concepts:** Generate any number of rough ideas, group and combine them, then turn two or three promising directions into clear concepts. Assess those concepts against the brief, customer value, KBC fit, and whether one useful part can be proved in the event.
+3. **Choose and describe the proposed KBC product:** Select one concept as the basis of the future product. Before choosing a prototype, describe who would use the complete product, the future experience, its distinctive mechanism, customer and KBC value, and the main data and trust dependencies. Mark unknowns. This is the product we propose, not a claim that it is built.
 4. **Choose the four-hour proof:** Select one MVP journey that demonstrates the most important part of that vision. Write its promise and **cut line**: Must-have capabilities above it; optional improvements and explicit exclusions below it. If removing a feature does not break the MVP promise, it is not a Must-have.
 5. **Split vertically:** Build the smallest end-to-end slice that shows the journey: UI input → backend or selected tool → visible result. Diana and Damiens agree on one example request and response so they can work in parallel and connect their parts early. Keep a challenge-specific fallback if an external dependency fails.
 6. **Agree on proof:** Mathieu drafts checks for each Must-have feature and for the complete product journey; all three review them before the build goes far. The [acceptance-criteria guide](docs/ACCEPTANCE_CRITERIA.md) explains the two levels and provides a run sheet. Criteria are agreed early; the product is accepted for the demo only after the feature and whole-product checks pass on the current integrated build.
 
-**Quick ideation:** Give everyone a short silent moment to write one user problem and possible approach. Share the ideas in turn without debating each one immediately; combine overlaps, then keep at most three candidates. Use the [innovation lenses](docs/IDEAS.md#ten-innovation-lenses) only if the group needs a prompt.
+**Quick ideation:** Run the [opening ideation method](docs/IDEATION_METHOD.md): agree on the problem, start with silent writing, brainstorm as many short ideas as possible together, group duplicates while preserving distinct angles, develop two or three concepts, then assess them. Choose one concept as the basis of the proposed KBC product. Use the [innovation lenses](docs/IDEAS.md#ten-innovation-lenses) only if the group needs a prompt.
 
-**Choose a direction after ideation:** Reject an idea that misses the brief, relies on forbidden or unavailable data, or cannot show a useful result in time. Compare the remaining ideas on user value, a distinctive capability, demo clarity, feasibility, and fit with the brief. Record the reason and key uncertainty; the three of us decide together, using the actual judging criteria when available.
+**Choose the product concept after ideation:** Reject a concept that misses the brief or relies on forbidden data. Compare the others on user value, a distinctive capability, KBC fit, and whether a useful part can be demonstrated in time. Record the reason and key uncertainty; the three of us decide together, using the actual judging criteria when available.
 
-**Select the MVP within that direction:** Identify a possible end-to-end journey for the chosen product vision and compare alternatives only if the scope is disputed or unclear. Choose the smallest journey that proves its central claim with available data, a visible result, and a feasible integration path. Define its promise and Must-have features; place everything else below the cut line. All three agree on what the four-hour product will actually do and what its demo can honestly claim.
+**Select the four-hour proof within that product:** Identify a possible end-to-end journey for the chosen product vision and compare alternatives only if the scope is disputed or unclear. Choose the smallest journey that proves its central claim with available data, a visible result, and a feasible integration path. Define its promise and Must-have features; place everything else below the cut line. All three agree on what the prototype will actually do and what its demo can honestly claim.
 
 **Scope and capability gate:** Mark each proposed feature or requirement Must, Should, Could, or Won't. A Must is needed for the promised journey or a mandatory rule; the others stay below the cut line. For any proposed AI or technical capability, ask: Which user step needs it? What input can we actually use? What result will we demonstrate? What happens when it fails? If the answer is unclear, leave it out of the four-hour product.
 
@@ -138,18 +140,17 @@ This is a short design-and-build cycle, not a formal Scrum sprint. We borrow the
 
 ## 7. Work rhythm and checkpoints
 
-Use this as a flexible budget from the moment the challenge is released. Confirm the actual deadline, pitch slot, and rules first. Mathieu facilitates a short check-in about every 25 minutes; the team changes the plan together when needed.
+Confirm the actual deadline, pitch slot, and rules first. Use **00:00–00:10 to understand** the brief and agree on the problem. Give Mathieu **00:10–00:40 to facilitate** ideas, concepts, the proposed KBC product, and its first small proof. Diana and Damiens then agree on the immediate request/result example and start coding. The 40-minute interface handoff is a target, not a researched optimum; move earlier when ready or adjust for a material rule in the brief. Mathieu facilitates short check-ins during the build.
 
-| Time | Team action | Exit check |
+| Stage | Team action | Exit check |
 | --- | --- | --- |
-| 0–20 min | Read the brief; identify problem, user, data, constraints, AI role, decision or action, value, and judging criteria. Ask for clarification where needed. | Everyone can state the same problem. |
-| 20–40 min | Generate a few options; all three choose one direction and describe its solution vision and expected value. | A clear problem, future user outcome, distinctive mechanism, and key unknowns. |
-| 40–60 min | Choose the smallest MVP proof and cut line; agree on Must-have feature and product checks. Diana and Damiens agree on the interface and a sample JSON exchange. | The team knows what to prove; Diana and Damiens can build against the same example. |
-| 60–150 min | Build and integrate the smallest end-to-end path early. Run relevant scenarios as parts connect; cut optional work when needed. | A visible UI → backend → result path runs. |
-| 150–195 min | Run Must-have feature checks and whole-product scenarios on the current integrated build, fix failures, and check the fallback. | The main demo path and one relevant failure path work. |
-| 195–240 min | Freeze features, rehearse Diana's pitch, answer likely jury questions, and submit. | The exact demo and submission path have been run. |
+| 00:00–00:10 — Understand | Read the brief individually; each writes a problem statement, then compare and agree on the shared problem and mandatory constraints. | Everyone can state the same problem. |
+| 00:10–00:40 — Mathieu facilitates | Write short ideas independently, brainstorm without a quota, group distinct angles, develop two or three concepts, choose and outline the proposed KBC product, then choose its first small proof. | A coherent product concept and one proof journey with a sample input and visible result; ready to define the interface. |
+| From about 00:40 — Define the immediate interface | Diana and Damiens agree on one request, success result, and failure result for that proof. | Both can start their first coding task against the same example. |
+| Build and integrate | Connect the smallest UI → backend/tool → visible result path early. Run relevant scenarios as parts connect; cut optional work when needed. | The central proof works on the integrated build. |
+| Verify and submit | Protect time to check Must-have features, the complete journey, failure path, pitch, and actual submission. Freeze optional work before this buffer. | The exact demo and submission path have been run. |
 
-The timeboxes are prompts to make decisions, not deadlines for perfect code. Keep a protected final buffer for testing and the demo.
+Keep a protected final buffer for testing and the demo. If a discussion stalls, state the unresolved question and choose the smallest reversible next step; do not let the worksheet delay a working slice.
 
 Keep one small shared task board in the [day-of guide](WORKFLOW_TEMPLATE.md): **To do → In progress → Integrated → Verified**. A task is integrated when it works with the other parts; it is verified when its relevant scenario passes. Give each active task one owner and a visible "done when" condition. Limit work in progress so the team finishes the main journey before adding features.
 
