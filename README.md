@@ -33,6 +33,14 @@ Open `http://localhost:5173`. Vite proxies `/api` to `http://localhost:5000`. Sm
 
 Copy `.env.example` to `.env` only when a provider is actually selected. No key is needed for the current connectivity check. The team roles and method for agreeing on an MVP interface live in `COMMAND.md`.
 
+
+## Docker
+
+```bash
+docker build -t hackaton-flask .
+docker run --rm -p 8080:8080   -e PORT=8080   hackaton-flask
+```
+
 ## Git remote
 
 The shared repository is `git@github.com:541l0r/tectonic2026.git`. Clone it with `git clone git@github.com:541l0r/tectonic2026.git`. Work on a branch and use the local merge workflow in `COMMAND.md`; no pull request is needed. The original `.bundle` is a backup of the starter, not the shared remote.
