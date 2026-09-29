@@ -1,10 +1,18 @@
 """Small mock API; replace the response engine after the challenge is known."""
 
+import os
+
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    static_folder="../frontend/dist",
+    static_url_path="",
+)
+
 CORS(app)
+
 
 @app.get("/api/health")
 def health():
@@ -14,11 +22,17 @@ def health():
 @app.post("/api/ask")
 def ask():
     payload = request.get_json(silent=True)
+
     if not isinstance(payload, dict):
         return jsonify(error="Expected a JSON object"), 400
 
     message = payload.get("message")
-    if not isinstance(message, str) or not message.strip() or len(message) > 2000:
+
+    if (
+        not isinstance(message, str)
+        or not message.strip()
+        or len(message) > 2000
+    ):
         return jsonify(error="message must be 1–2000 characters"), 400
 
     if payload.get("user_id", "demo") != "demo":
@@ -27,12 +41,38 @@ def ask():
     return jsonify(
         answer="Your spending is up in groceries this month.",
         blocks=[
-            {"type": "metric", "label": "Groceries", "value": "€420", "detail": "+€60 vs previous month"},
-            {"type": "list", "title": "Possible next steps", "items": ["Review recent grocery purchases", "Set a monthly alert"]},
+            {
+                "type": "metric",
+                "label": "Groceries",
+                "value": "€420",
+                "detail": "+€60 vs previous month",
+            },
+            {
+                "type": "list",
+                "title": "Possible next steps",
+                "items": [
+                    "Review recent grocery purchases",
+                    "Set a monthly alert",
+                ],
+            },
         ],
         source="mock",
     )
 
 
+# Serve the React/Vite application.
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def frontend(path):
+    if path and os.path.exists(os.path.join(app.static_folder, path)):
+        return app.send_static_file(path)
+
+    return app.send_static_file("index.html")
+
+
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 8080)),
+        debug=False,
+    )
