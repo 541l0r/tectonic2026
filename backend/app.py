@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from sqlalchemy import text
-
+from future_engine import future
+from datetime import date
 
 load_dotenv()
 
@@ -146,52 +147,6 @@ def health():
         environment=APP_ENV,
     )
 
-
-@app.post("/api/ask")
-def ask():
-    payload = request.get_json(silent=True)
-
-    if not isinstance(payload, dict):
-        return jsonify(error="Expected a JSON object"), 400
-
-    message = payload.get("message")
-
-    if (
-        not isinstance(message, str)
-        or not message.strip()
-        or len(message) > 2000
-    ):
-        return jsonify(
-            error="message must be 1–2000 characters"
-        ), 400
-
-    if payload.get("user_id", "demo") != "demo":
-        return jsonify(
-            error="Only the demo user is available"
-        ), 400
-
-    return jsonify(
-        answer="Your spending is up in groceries this month.",
-        blocks=[
-            {
-                "type": "metric",
-                "label": "Groceries",
-                "value": "€420",
-                "detail": "+€60 vs previous month",
-            },
-            {
-                "type": "list",
-                "title": "Possible next steps",
-                "items": [
-                    "Review recent grocery purchases",
-                    "Set a monthly alert",
-                ],
-            },
-        ],
-        source="mock",
-    )
-
-
 @app.get("/db-test")
 def db_test():
     try:
@@ -217,7 +172,72 @@ def db_test():
             error=str(exc),
         ), 500
 
+from flask import jsonify
+from sqlalchemy import text
 
+@app.get("/api/future/<int:customer_id>")
+def get_future(customer_id):
+    if customer_id <= 0:
+        return jsonify(error="Invalid customer_id"), 400
+
+    AS_OF = date.today()
+
+    try:
+        with engine.connect() as connection:
+            customer_row = connection.execute(
+                text("""
+                    SELECT
+                        customer_id,
+                        name,
+                        current_balance,
+                        age,
+                        safety_buffer,
+                        city,
+                        country
+                    FROM customers
+                    WHERE customer_id = :customer_id
+                """),
+                {"customer_id": customer_id}
+            ).mappings().first()
+
+            if customer_row is None:
+                return jsonify(error="Customer not found"), 404
+
+            transaction_rows = connection.execute(
+                text("""
+                    SELECT
+                        transaction_id,
+                        customer_id,
+                        product_id,
+                        transaction_date,
+                        amount,
+                        merchant,
+                        merchant_category,
+                        payment_method
+                    FROM transactions
+                    WHERE customer_id = :customer_id
+                      AND transaction_date < :as_of
+                    ORDER BY transaction_date, transaction_id
+                """),
+                {
+                    "customer_id": customer_id,
+                    "as_of": AS_OF,
+                }
+            ).mappings().all()
+
+        customer = dict(customer_row)
+        transactions = [dict(row) for row in transaction_rows]
+
+        result = future(
+            customer,
+            transactions,
+            AS_OF
+        )
+
+        return jsonify(result), 200
+
+    except Exception as exc:
+        return jsonify(error=str(exc)), 500
 # ---------------------------------------------------------------------------
 # React / Vite frontend
 # ---------------------------------------------------------------------------
