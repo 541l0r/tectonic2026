@@ -24,6 +24,8 @@ REDUCTION_STEP = 5
 MINIMUM_REDUCTION = 10
 SAVINGS_STEP = 25
 MINIMUM_SAVINGS = 50
+RECURRING_GRACE_DAYS = 5
+HISTORY_DAYS = 90
 
 
 def _as_date(value: date | datetime | str) -> date:
@@ -89,18 +91,26 @@ def classify_transaction(transaction: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def detect_recurring_patterns(transactions: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _pattern_key(transaction):
+    # Opposite transfer legs must not be merged into one zero-net schedule.
+    return ((transaction.get('merchant') or '').lower(), transaction['category'],
+            transaction['transaction_type'], transaction['amount'] > 0)
+
+
+def _pattern_is_current(last_date, as_of):
+    next_due = _next_monthly_date(last_date, last_date)
+    return as_of <= next_due + timedelta(days=RECURRING_GRACE_DAYS)
+
+
+def detect_recurring_patterns(transactions: list[dict[str, Any]], as_of=None) -> list[dict[str, Any]]:
     """Mark monthly salary/bill patterns using merchant, date and amount regularity."""
     enriched = [classify_transaction(transaction) for transaction in transactions]
-    groups: dict[tuple[str, str, str], list[dict[str, Any]]] = defaultdict(list)
+    groups = defaultdict(list)
     for transaction in enriched:
-        groups[(
-            (transaction.get("merchant") or "").lower(),
-            transaction["category"],
-            transaction["transaction_type"],
-        )].append(transaction)
+        groups[_pattern_key(transaction)].append(transaction)
 
     recurring_ids: set[Any] = set()
+    active_ids: set[Any] = set()
     for group in groups.values():
         group.sort(key=lambda item: item["date"])
         if len(group) < 3:
@@ -114,10 +124,11 @@ def detect_recurring_patterns(transactions: list[dict[str, Any]]) -> list[dict[s
         stable_amount = average > 0 and max(abs(value - average) / average for value in amounts) <= 0.15
         # Card merchants such as a supermarket may recur, but are variable
         # spending rather than a scheduled obligation. For this MVP only
-        # direct debits and bank transfers can become calendar events.
+        # direct debits and transfers can become calendar events. A transfer
+        # affects the supplied balance scope but is not spending or salary.
         scheduled_method = all(
             (item.get("payment_method") or "").lower()
-            in {"direct_debit", "bank_transfer"}
+            in {"direct_debit", "bank_transfer", "internal_transfer"}
             for item in group
         )
         monthly = all(gap == 1 for gap in gaps)
@@ -125,27 +136,28 @@ def detect_recurring_patterns(transactions: list[dict[str, Any]]) -> list[dict[s
         stable_date = max(abs(day - median(days)) for day in days) <= 5
         if monthly and stable_amount and scheduled_method and stable_date:
             recurring_ids.update(item["transaction_id"] for item in group)
+            if as_of is None or _pattern_is_current(group[-1]['date'], _as_date(as_of)):
+                active_ids.update(item['transaction_id'] for item in group)
 
     for transaction in enriched:
         transaction["is_recurring"] = transaction["transaction_id"] in recurring_ids
+        transaction['is_recurring_active'] = transaction['transaction_id'] in active_ids
     return enriched
 
 
 def _recurring_events(enriched: list[dict[str, Any]], as_of: date, horizon_days: int) -> list[dict[str, Any]]:
-    by_merchant: dict[tuple[str, str, str], list[dict[str, Any]]] = defaultdict(list)
+    by_merchant = defaultdict(list)
     for transaction in enriched:
         if transaction["is_recurring"]:
-            by_merchant[(
-                (transaction.get("merchant") or "").lower(),
-                transaction["category"],
-                transaction["transaction_type"],
-            )].append(transaction)
+            by_merchant[_pattern_key(transaction)].append(transaction)
 
     end_date = as_of + timedelta(days=horizon_days)
     events: list[dict[str, Any]] = []
     for transactions in by_merchant.values():
         transactions.sort(key=lambda item: item["date"])
         last = transactions[-1]
+        if not _pattern_is_current(last['date'], as_of):
+            continue
         expected_amount = round(sum(item["amount"] for item in transactions) / len(transactions), 2)
         event_date = _next_monthly_date(last["date"], as_of)
         while event_date <= end_date:
@@ -213,11 +225,11 @@ def build_forecast(
 def calculate_confidence(enriched: list[dict[str, Any]]) -> tuple[float, str]:
     income_patterns = {
         item.get("merchant") for item in enriched
-        if item["is_recurring"] and item["transaction_type"] == "income"
+        if item.get('is_recurring_active', item['is_recurring']) and item["transaction_type"] == "income"
     }
     essential_patterns = {
         item.get("merchant") for item in enriched
-        if item["is_recurring"] and item["is_essential"]
+        if item.get('is_recurring_active', item['is_recurring']) and item["is_essential"]
     }
     score = min(0.95, 0.35 + 0.30 * bool(income_patterns) + 0.15 * min(2, len(essential_patterns)))
     label = "high" if score >= 0.75 else "medium" if score >= 0.60 else "low"
@@ -322,10 +334,10 @@ def validate_support_plan(forecast, safety_buffer, capacities, actions, confiden
 
 def create_support_plan(forecast, safety_buffer, capacities, confidence):
     gap_amount = max(0.0, round(float(safety_buffer) - forecast['lowest_predicted_balance'], 2))
-    if gap_amount == 0:
-        return dict(status='safe', gap_amount=0.0, plan=[])
     if confidence == 'low':
         return _review(forecast, safety_buffer, 'The forecast is too uncertain for a firm spending plan.')
+    if gap_amount == 0:
+        return dict(status='safe', gap_amount=0.0, plan=[])
     horizon = len(forecast['days'])
     required_daily = max(max(0, safety_buffer - day['balance']) / offset
                          for offset, day in enumerate(forecast['days'], 1))
@@ -352,6 +364,8 @@ def create_savings_proposal(forecast, current_balance, safety_buffer, confidence
     suggest 25% of remaining headroom rounded down to €25, minimum €50.
     An edited proposal may use at most that same conservative allowance.
     """
+    if confidence == 'low':
+        return _review(forecast, safety_buffer, 'The forecast is too uncertain for a savings proposal.')
     reserve = round(max(100, 7 * forecast['daily_variable_spend']), 2)
     headroom = max(0, min(float(current_balance), forecast['lowest_predicted_balance']) - safety_buffer - reserve)
     allowance = math.floor(headroom * 0.25 / SAVINGS_STEP) * SAVINGS_STEP
@@ -426,7 +440,11 @@ def filter_customer_transactions(customer_id, transactions):
 
 def future(customer: dict[str, Any], transactions: list[dict[str, Any]], as_of: date,
            horizon_days: int = 30, learning_state=None, preferences=None, proposal=None) -> dict[str, Any]:
-    """Standalone tool; caller supplies history, snapshot and optional learned state."""
+    """Caller supplies history and balance for the SAME account/balance scope.
+
+    Include both transfer legs when both accounts belong to the balance scope;
+    a transfer leaving that scope must remain a net cash outflow.
+    """
     if type(horizon_days) is not int or not 1 <= horizon_days <= 90:
         raise ValueError('horizon_days must be between 1 and 90')
     if not isinstance(customer, dict):
@@ -451,13 +469,23 @@ def future(customer: dict[str, Any], transactions: list[dict[str, Any]], as_of: 
         adjustment = float(learning_state['daily_spend_adjustment'])
         if not math.isfinite(adjustment):
             raise ValueError('Invalid learned adjustment')
-    enriched = detect_recurring_patterns([row for row in transactions if _as_date(row['transaction_date']) <= as_of])
+    enriched = detect_recurring_patterns(
+        [row for row in transactions if _as_date(row['transaction_date']) <= as_of], as_of)
     forecast = build_forecast(balance, enriched, as_of, horizon_days, adjustment)
     confidence_score, confidence = calculate_confidence(enriched)
+    history_covered = bool(enriched) and min(item['date'] for item in enriched) <= as_of - timedelta(days=HISTORY_DAYS - 1)
+    warnings = []
+    if not history_covered:
+        warnings.append('Insufficient history: supply at least 90 days of transaction history.')
+    if enriched and max(item['date'] for item in enriched) < as_of - timedelta(days=35):
+        warnings.append('Transaction history is stale; refresh it before relying on this forecast.')
+    if any(item['is_recurring'] and not item['is_recurring_active'] for item in enriched):
+        warnings.append('A recurring payment is overdue by more than five days; confirm whether it stopped or data is missing.')
+    if warnings:
+        confidence_score, confidence = min(confidence_score, 0.35), 'low'
     capacities = calculate_reduction_capacity(enriched, as_of)
     capacities = [item for item in capacities if item['category'] not in protected]
     plan = create_support_plan(forecast, safety_buffer, capacities, confidence)
-    history_covered = bool(enriched) and min(item['date'] for item in enriched) <= as_of - timedelta(days=89)
     has_expected_income = any(event['transaction_type'] == 'income'
                               for day in forecast['days'] for event in day['recurring_events'])
     savings_eligible = suggest_savings and history_covered and has_expected_income
@@ -480,6 +508,10 @@ def future(customer: dict[str, Any], transactions: list[dict[str, Any]], as_of: 
     elif plan['status'] == 'safe':
         plan = create_savings_proposal(forecast, balance, safety_buffer, confidence, savings_eligible)
 
+    # Neither an LLM proposal nor disabling savings may bypass data quality.
+    if warnings:
+        plan = _review(forecast, safety_buffer, ' '.join(warnings))
+
     drivers = []
     for day in forecast["days"]:
         for event in day["recurring_events"]:
@@ -496,6 +528,7 @@ def future(customer: dict[str, Any], transactions: list[dict[str, Any]], as_of: 
         "as_of_date": as_of.isoformat(),
         "safety_buffer": float(customer["safety_buffer"]),
         "forecast": {**forecast, "confidence": confidence, "confidence_score": confidence_score},
+        "data_quality": {"history_covered": history_covered, "warnings": warnings},
         "risk": {
             "buffer_breach": forecast["lowest_predicted_balance"] < float(customer["safety_buffer"]),
             "gap_amount": plan["gap_amount"],

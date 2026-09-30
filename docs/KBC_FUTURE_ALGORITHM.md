@@ -7,8 +7,8 @@
 | Stage | What the engine does |
 | --- | --- |
 | Understand transactions | Derive income, expense and transfer labels. Protect essential expenses and any additional customer-protected categories. Unknown categories are excluded from reductions. |
-| Recognise patterns | Detect at least three consecutive monthly payments with similar amounts and dates. Forecast scheduled income and bills alongside average everyday spending. |
-| Detect need | Compare every forecast balance with the chosen buffer. Confidence is a pattern-based indicator, not a probability of accuracy. |
+| Recognise patterns | Detect at least three consecutive monthly payments with similar amounts and dates. Expire patterns more than five days past their next expected payment. Forecast active income, bills and recurring transfers; transfers affect cash balance, not spending or salary labels. |
+| Detect need | Compare every forecast balance with the buffer. Missing/short history (under 90 days), stale history or expired patterns require review, never a “safe” recommendation. Confidence is an indicator, not a probability of accuracy. |
 | Propose spending reductions | Estimate capacity from the last three complete months of personal flexible spending. Use €5 steps, at least €10 per category, and simulate savings accruing daily. Propose only a plan that protects every forecast day. |
 | Propose savings | With high confidence, sufficient history, expected income and at least a 30-day horizon, retain the buffer plus an extra reserve of at least €100 or seven days of variable spending. Suggest 25% of remaining headroom, rounded down to €25, minimum €50. Check today's available balance too. These are configurable-in-code demo rules, not validated affordability policy. |
 | Validate an adjustment | Recalculate an LLM/customer proposal against the same forecast, protected categories, personal capacities and savings allowance. Reject unsupported or infeasible changes before approval. |
@@ -19,6 +19,6 @@
 
 **How it improves.** Compare predicted spending with actual spending, then adjust gradually. If €70 was predicted for a week but €98 was spent, the error is €4 per day. The implemented learning calculation adds €1.20 per day to the next forecast by default. The app must still save observations and reuse the returned correction. Learning from Approve/Adjust/Dismiss feedback is not implemented; improvement in accuracy must be measured.
 
-**MVP scope.** The engine calculates and validates recommendations; the LLM explains and adapts proposals for customer approval and feedback. Savings and reductions are estimates, not guarantees. Reductions assume even daily savings from tomorrow; savings proposals simulate one allocation, not a recurring transfer. There is no calibrated uncertainty band, and the MVP executes no financial transactions.
+**MVP scope.** Balance and transactions must cover the same account scope; include both transfer legs when both accounts are in scope. The database enforces customer/product ownership; the backend still authorizes access. The engine validates; the LLM explains and adapts proposals. Savings and reductions are estimates, not guarantees. Reductions assume even daily savings; savings proposals simulate one allocation. No calibrated uncertainty band or financial execution is provided.
 
 **Verification.** Run `python3 -m unittest discover -s backend -p 'test_future_engine.py'` and `python3 -m unittest discover -s scripts -p 'test_future_demo_data.py'`. Read one customer from the local database with `python3 scripts/future_demo_data.py --database --customer-id 1001`. Omitting the ID fails; no group forecast is available.

@@ -195,6 +195,95 @@ class KbcFutureEngineTests(unittest.TestCase):
         self.assertEqual(result['recommendation']['status'], 'review_needed')
         self.assertFalse(result['recommendation']['proposal_validated'])
 
+    def test_stopped_salary_is_not_projected_or_counted_as_reliable(self):
+        rows = [row for row in self.transactions if row['merchant_category'] != 'salary']
+        rows += [self.transaction(f'old-salary-{month}', month, 28, 2100,
+                                  'Acme', 'salary', 'bank_transfer') for month in (4, 5, 6)]
+        result = future(self.customer, rows, date(2026, 9, 30))
+        events = [event for day in result['forecast']['days'] for event in day['recurring_events']]
+        self.assertFalse(any(event['transaction_type'] == 'income' for event in events))
+        self.assertEqual(result['forecast']['confidence'], 'low')
+        self.assertEqual(result['recommendation']['status'], 'review_needed')
+        self.assertTrue(any('overdue' in warning for warning in result['data_quality']['warnings']))
+
+    def test_recurring_freshness_expires_after_due_date_plus_grace(self):
+        rows = [self.transaction(f'salary-{month}', month, 28, 2100,
+                                 'Acme', 'salary', 'bank_transfer') for month in (6, 7, 8)]
+        self.assertTrue(all(row['is_recurring_active'] for row in
+                            detect_recurring_patterns(rows, date(2026, 10, 3))))
+        expired = detect_recurring_patterns(rows, date(2026, 10, 4))
+        self.assertTrue(all(row['is_recurring'] for row in expired))
+        self.assertFalse(any(row['is_recurring_active'] for row in expired))
+
+    def test_stopped_bill_requires_review_instead_of_claiming_extra_savings(self):
+        rows = [row for row in self.transactions if row['merchant_category'] != 'rent']
+        rows += [self.transaction(f'old-rent-{month}', month, 3, -900,
+                                  'Home', 'rent', 'direct_debit') for month in (4, 5, 6)]
+        result = future({**self.customer, 'current_balance': 10000}, rows, date(2026, 9, 30))
+        self.assertEqual(result['recommendation']['status'], 'review_needed')
+        self.assertNotIn('savings_amount', result['recommendation'])
+
+    def test_recurring_outgoing_transfers_reduce_balance_but_are_not_spending(self):
+        customer = {**self.customer, 'current_balance': 4000}
+        transfers = [self.transaction(f'transfer-{month}', month, 15, -2900,
+                                     'Own account savings', 'savings', 'internal_transfer')
+                     for month in (7, 8, 9)]
+        base = future(customer, self.transactions, date(2026, 9, 30))
+        result = future(customer, self.transactions + transfers, date(2026, 9, 30))
+        self.assertEqual(result['forecast']['daily_variable_spend'], base['forecast']['daily_variable_spend'])
+        for index, day in enumerate(result['forecast']['days']):
+            expected = base['forecast']['days'][index]['balance'] - (2900 if index >= 14 else 0)
+            self.assertAlmostEqual(day['balance'], expected, places=2)
+        self.assertTrue(result['risk']['buffer_breach'])
+        self.assertNotEqual(result['recommendation']['status'], 'savings_opportunity')
+        self.assertTrue(all(not row['is_flexible'] and not row['is_essential']
+                            for row in detect_recurring_patterns(transfers)))
+
+    def test_both_transfer_legs_cancel_within_same_balance_scope(self):
+        transfers = [self.transaction(f'transfer-{month}-{amount}', month, 15, amount,
+                                     'Own account transfer', 'savings', 'internal_transfer')
+                     for month in (7, 8, 9) for amount in (-500, 500)]
+        base = future(self.customer, self.transactions, date(2026, 9, 30))
+        result = future(self.customer, self.transactions + transfers, date(2026, 9, 30))
+        self.assertEqual([day['balance'] for day in result['forecast']['days']],
+                         [day['balance'] for day in base['forecast']['days']])
+        events = result['forecast']['days'][14]['recurring_events']
+        self.assertEqual(sorted(event['amount'] for event in events), [-500, 500])
+        self.assertTrue(all(event['transaction_type'] == 'transfer' for event in events))
+
+    def test_incoming_transfers_do_not_substitute_for_salary_confidence(self):
+        rows = [row for row in self.transactions if row['merchant_category'] != 'salary']
+        rows += [self.transaction(f'incoming-{month}', month, 28, 2100,
+                                  'Own account transfer', 'savings', 'internal_transfer')
+                 for month in (7, 8, 9)]
+        result = future({**self.customer, 'current_balance': 4000}, rows, date(2026, 9, 30))
+        self.assertNotEqual(result['forecast']['confidence'], 'high')
+        self.assertNotEqual(result['recommendation']['status'], 'savings_opportunity')
+
+    def test_empty_short_stale_and_future_only_history_require_review(self):
+        histories = [[], [row for row in self.transactions if '-09-' in row['transaction_date']],
+                     [row for row in self.transactions if '-07-' in row['transaction_date']],
+                     [self.transaction('future', 10, 2, -50, 'Shop', 'shopping', 'card')]]
+        for rows in histories:
+            for proposal in (None, {'type': 'savings', 'amount': 50},
+                             {'type': 'spending_reduction', 'actions': [{'category': 'dining', 'reduce_by': 20}]}):
+                with self.subTest(rows=len(rows), proposal=proposal):
+                    result = future({**self.customer, 'current_balance': 10000}, rows,
+                                    date(2026, 9, 30), proposal=proposal)
+                    self.assertEqual(result['recommendation']['status'], 'review_needed')
+                    self.assertFalse(result['recommendation']['proposal_validated'])
+                    self.assertEqual(result['recommendation']['plan'], [])
+                    self.assertTrue(result['data_quality']['warnings'])
+
+    def test_low_confidence_without_gap_is_not_labelled_safe(self):
+        rows = [self.transaction(f'pay-{month}', month, 1, amount,
+                                 'Client', 'freelance_income', 'bank_transfer')
+                for month, amount in ((7, 500), (8, 1700), (9, 800))]
+        result = future({**self.customer, 'current_balance': 10000}, rows, date(2026, 9, 30),
+                        preferences={'suggest_savings': False})
+        self.assertEqual(result['data_quality']['warnings'], [])
+        self.assertEqual(result['recommendation']['status'], 'review_needed')
+
 
 if __name__ == "__main__":
     unittest.main()

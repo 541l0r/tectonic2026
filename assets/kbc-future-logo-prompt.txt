@@ -1,0 +1,16 @@
+Generated with the built-in image generation tool using the imagegen skill.
+Original hackathon project concept, not an official KBC brand asset.
+
+Initial prompt:
+Use case: logo-brand
+Asset type: hackathon project logo for app, presentation and demo video.
+Primary request: Create one polished original logo concept for "KBC Future", a personal financial digital twin that anticipates cash-flow needs.
+Style/medium: minimal flat vector-like logo, crisp edges, professional banking technology identity.
+Composition: horizontal logo lockup with a compact original symbol beside an exceptionally legible wordmark; balanced proportions and generous clear space. Symbol uses two closely related forward-flowing paths, suggesting a person and their financial digital twin, subtly forming an F. Keep it simple enough for small sizes.
+Color palette: banking blue, cyan accent, dark navy wordmark.
+Text (verbatim): "KBC Future". Modern clean sans-serif, KBC slightly bolder than Future.
+Background: genuinely transparent background with alpha, not a checkerboard drawing.
+Constraints: single logo only; original project concept, not a reproduction of the official KBC emblem. No tagline, mockup, border, shadows, gradients, 3D, coins, piggy banks, robot, watermark or additional text.
+
+Final refinement prompt:
+Refine this KBC Future logo. Preserve the exact text "KBC Future", horizontal arrangement, paired blue/cyan digital-twin symbol, and typography. Change only the finish: remove every glow, shadow, halo, texture and gradient. Use completely solid flat blue, cyan and navy fills with sharp clean antialiased edges. Genuine transparent background. It must look like a clean professional vector logo exported as PNG, not luminous artwork. No extra text or objects.

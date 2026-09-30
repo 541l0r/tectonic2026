@@ -146,3 +146,14 @@ A successful adjustment gets a fresh saved decision ID and fresh customer approv
 approve the plan, and see that approval recorded. Then verify Sam and Robin.
 Automatic forecast-learning persistence is a later integration task; do not let
 it block this first working journey.
+# Database review fixes
+
+For an existing local database, back up first, then run:
+
+```sh
+docker compose exec -T -e MYSQL_PWD=app mysql mysql -uapp app_dev < sql/migrations/001_customer_product_ownership.sql
+```
+
+This preserves data, renames legacy `client_product_link` to `customer_product`, and enforces transaction ownership with a composite foreign key. It is repeatable and stops on mismatched ownership or ambiguous tables; do not use `--force`, reset the volume, or rerun the seed. Fresh databases use the updated `sql/schema.sql` directly.
+
+`future()` now returns `data_quality.warnings` and `review_needed` for insufficient/stale history or expired recurring patterns. Pass these warnings to the LLM/UI; do not describe such forecasts as safe. Balance and transaction history must share the same account scope. Recurring transfers affect the balance but do not count as income or flexible spending.

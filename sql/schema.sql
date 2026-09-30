@@ -90,7 +90,13 @@ CREATE TABLE transactions (
 
     CONSTRAINT fk_transactions_product
         FOREIGN KEY (product_id)
-        REFERENCES products(product_id)
+        REFERENCES products(product_id),
+
+    CONSTRAINT fk_transactions_customer_product
+        FOREIGN KEY (customer_id, product_id)
+        REFERENCES customer_product(customer_id, product_id)
+        ON DELETE RESTRICT
+        ON UPDATE RESTRICT
 ) ENGINE=InnoDB;
 
 
