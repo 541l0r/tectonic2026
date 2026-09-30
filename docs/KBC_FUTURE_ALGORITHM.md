@@ -1,59 +1,24 @@
-# KBC Future — the algorithm in one page
+# KBC Future algorithm in one page
 
-**Purpose.** Help a customer see cash-flow pressure before it happens and identify
-possible spending adjustments. The financial digital twin is a personal model
-of income, commitments and everyday spending, recalculated from transaction history.
+**Purpose.** Predict cash-flow pressure and suggest practical action: reduce flexible spending when a gap is forecast, or consider building savings when there is room.
 
-**Main tool:** `future(customer, transactions, as_of, horizon_days=30, learning_state=None)` in
-[`backend/future_engine.py`](../backend/future_engine.py). It returns daily balances,
-the forecast low point, a buffer-gap amount, payment drivers and a proposed plan.
-It runs independently of the database, API and interface; Damiens supplies the data.
+**Main tool.** `future(customer, transactions, as_of, horizon_days=30, learning_state=None, preferences=None, proposal=None)`. The backend supplies the customer's balance, buffer and transaction history. Categories come from transaction enrichment. The engine returns the forecast, recommendation and calculation limits.
 
-**Inputs.** Customer ID, balance at the forecast date and chosen safety buffer;
-historical transaction ID, date, signed amount, merchant, category and payment method.
-Supply only transactions through `as_of`, with about three months of complete
-history. Merchant categories are supplied enrichment, not inferred by this code.
-
-| Step / function | What the current implementation does |
+| Stage | What the engine does |
 | --- | --- |
-| 1. `classify_transaction` | Uses amount direction and transfer metadata to label income, expense or transfer. Category rules protect rent, utilities, insurance, groceries, transport, healthcare and debt payments. Dining, shopping, leisure and entertainment are candidates for reduction. Unknown categories are excluded from reductions. |
-| 2. `detect_recurring_patterns` | Groups by merchant, category and type. Requires at least three consecutive months, amounts within 15% of their mean, dates within five days of the median day, and bank-transfer/direct-debit methods. |
-| 3. `build_forecast` | Schedules recurring payments using their last observed day of the month and average amount. Spreads non-recurring expenses from the last 90 days into an average daily spend. Calculates each future daily balance. |
-| 4. `calculate_confidence` | Produces a heuristic score from recurring income and essential-payment patterns. This is a regularity indicator, not a measured probability of forecast accuracy. |
-| 5. `calculate_reduction_capacity` | Uses the last three complete months. For flexible categories recorded in all three, subtracts the 20th-percentile monthly spend from the average. This estimates possible reductions; past low spending does not prove present feasibility. |
-| 6. `create_support_plan` | Returns `safe` when there is no predicted gap. Otherwise spreads reductions across forecast days and checks every balance against the buffer. Uses the largest capacities first, scaled to the period length. A gap with insufficient capacity or low confidence returns `review_needed`; a feasible plan requires approval. |
+| Understand transactions | Derive income, expense and transfer labels. Protect essential expenses and any additional customer-protected categories. Unknown categories are excluded from reductions. |
+| Recognise patterns | Detect at least three consecutive monthly payments with similar amounts and dates. Forecast scheduled income and bills alongside average everyday spending. |
+| Detect need | Compare every forecast balance with the chosen buffer. Confidence is a pattern-based indicator, not a probability of accuracy. |
+| Propose spending reductions | Estimate capacity from the last three complete months of personal flexible spending. Use €5 steps, at least €10 per category, and simulate savings accruing daily. Propose only a plan that protects every forecast day. |
+| Propose savings | With high confidence, sufficient history, expected income and at least a 30-day horizon, retain the buffer plus an extra reserve of at least €100 or seven days of variable spending. Suggest 25% of remaining headroom, rounded down to €25, minimum €50. Check today's available balance too. These are configurable-in-code demo rules, not validated affordability policy. |
+| Validate an adjustment | Recalculate an LLM/customer proposal against the same forecast, protected categories, personal capacities and savings allowance. Reject unsupported or infeasible changes before approval. |
 
-```text
-Daily balance = previous balance + recurring flows − expected variable spend
-Buffer gap    = max(0, chosen buffer − lowest predicted balance)
-```
+**Verified examples.** From 30 September 2026, Alex's 30-day forecast reaches €184 against a €250 buffer. Reducing dining by €70 and shopping by €10 produces a simulated minimum of €256. Sam receives a €625 savings proposal, leaving a simulated minimum current-account balance of €2,345.67. Robin's irregular income calls for review. Without a gap or a qualifying savings opportunity, no action is proposed.
 
-**Verified demo (30 days from 30 September 2026).** Alex's forecast reaches €184 on 27 October: €66 below his €250
-buffer. Reducing dining by €72 and shopping by €1.34 across 30 days brings the
-simulated minimum to €250.01. The plan exceeds €66 because savings accrue gradually.
-Sam gets `safe`; Robin's irregular income leads to `review_needed`.
+**The LLM's role.** Explain why the recommendation matters and propose adjustments based on the customer's stated preferences. For example, Alex could prefer €40 less dining and €40 less shopping; Sam could prefer saving €500. The backend passes that structured proposal back to `future()` for validation. Only validated figures may be presented for fresh customer approval. The LLM must not change balances, forecasts, essential-expense rules or the buffer on its own. No transfer or spending restriction is executed.
 
-**How it improves.** KBC Future compares what it predicted with what the customer
-actually spent, then adjusts the next forecast gradually. For example, if it
-predicted €70 for a week but the customer spent €98, spending was €4 higher per
-day. It adds €1.20 per day to the next forecast, correcting 30% of the difference
-to avoid overreacting. The prediction-learning calculation is implemented, and
-the forecast can use its correction. Automatic collection of actual outcomes,
-saving and reusing corrections, and learning from customer feedback
-(Approve/Adjust/Dismiss) still need app integration and development.
-Better accuracy must be checked over time.
+**How it improves.** Compare predicted spending with actual spending, then adjust gradually. If €70 was predicted for a week but €98 was spent, the error is €4 per day. The implemented learning calculation adds €1.20 per day to the next forecast by default. The app must still save observations and reuse the returned correction. Learning from Approve/Adjust/Dismiss feedback is not implemented; improvement in accuracy must be measured.
 
-**LLM and customer.** The planned LLM explains the calculated result, then asks for
-approval, adjustment or dismissal; it must not invent figures or execute actions.
-The UI/backend will record these responses. The algorithm provides the evidence.
+**MVP scope.** The engine calculates and validates recommendations; the LLM explains and adapts proposals for customer approval and feedback. Savings and reductions are estimates, not guarantees. Reductions assume even daily savings from tomorrow; savings proposals simulate one allocation, not a recurring transfer. There is no calibrated uncertainty band, and the MVP executes no financial transactions.
 
-**MVP limits.** Confidence is heuristic; there is no uncertainty band. Reductions
-assume even daily savings starting tomorrow. Positive receipts may include refunds;
-categories need review. A learned correction can become stale as habits change.
-`safe` means no gap in this forecast, not guaranteed affordability. The code
-executes no financial action and does not yet learn advice preferences.
-
-**Verification:** 12 algorithm checks and three shared-fixture checks pass. Run
-`python3 -m unittest discover -s backend -p 'test_future_engine.py' -v` and
-`python3 -m unittest discover -s scripts -p 'test_future_demo_data.py' -v`.
-Run the actual database scenarios with `python3 scripts/future_demo_data.py --database`.
+**Verification.** 18 algorithm tests and five shared-data checks pass. Run `python3 -m unittest discover -s backend -p 'test_future_engine.py'` and `python3 -m unittest discover -s scripts -p 'test_future_demo_data.py'`. Read the actual local database with `python3 scripts/future_demo_data.py --database`.

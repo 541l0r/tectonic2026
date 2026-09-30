@@ -1,8 +1,8 @@
 """Deterministic cash-flow decision engine for the KBC Future MVP.
 
-The engine deliberately derives financial labels from raw transactions. An LLM
-may later explain these results, but it must not decide affordability, mark an
-expense essential, or create an action plan.
+The engine derives financial labels and validates proposals. An LLM can explain
+results and propose preference-based adjustments; this module recalculates every
+amount before it can be offered for customer approval. No action is executed.
 """
 
 from __future__ import annotations
@@ -20,6 +20,10 @@ ESSENTIAL_CATEGORIES = {
     "debt_repayment", "groceries", "transport",
 }
 FLEXIBLE_CATEGORIES = {"dining", "shopping", "leisure", "entertainment"}
+REDUCTION_STEP = 5
+MINIMUM_REDUCTION = 10
+SAVINGS_STEP = 25
+MINIMUM_SAVINGS = 50
 
 
 def _as_date(value: date | datetime | str) -> date:
@@ -227,7 +231,7 @@ def calculate_reduction_capacity(enriched: list[dict[str, Any]], as_of: date) ->
     # artificially lower the spending floor.
     last_complete = as_of if as_of.day == calendar.monthrange(as_of.year, as_of.month)[1] else date(as_of.year, as_of.month, 1) - timedelta(days=1)
     for item in enriched:
-        if not item["is_flexible"]:
+        if not item["is_flexible"] or item.get("is_recurring", False):
             continue
         month_key = (item["date"].year, item["date"].month)
         if 0 <= _months_between(item["date"], last_complete) < 3:
@@ -250,60 +254,126 @@ def calculate_reduction_capacity(enriched: list[dict[str, Any]], as_of: date) ->
     return sorted(capacities, key=lambda item: item["reduction_capacity"], reverse=True)
 
 
-def create_support_plan(
-    forecast: dict[str, Any], safety_buffer: float, capacities: list[dict[str, Any]], confidence: str
-) -> dict[str, Any]:
-    gap_amount = max(0.0, round(float(safety_buffer) - forecast["lowest_predicted_balance"], 2))
-    if gap_amount == 0:
-        return {"status": "safe", "gap_amount": 0.0, "plan": []}
-    if confidence == "low":
-        return {
-            "status": "review_needed",
-            "gap_amount": gap_amount,
-            "plan": [],
-            "message": "Your income pattern is irregular, so KBC Future will not make a firm spending recommendation.",
-        }
+def _money(value):
+    if isinstance(value, bool):
+        raise ValueError('Expected a finite amount')
+    try:
+        amount = float(value)
+    except (TypeError, ValueError, OverflowError) as error:
+        raise ValueError('Expected a finite amount') from error
+    if not math.isfinite(amount):
+        raise ValueError('Expected a finite amount')
+    return amount
 
-    # Reductions accrue gradually. Find the daily saving needed to protect
-    # EVERY forecast day, then cap it using monthly flexible capacity.
+
+def _review(forecast, safety_buffer, message):
+    return dict(status='review_needed', gap_amount=max(0, round(safety_buffer - forecast['lowest_predicted_balance'], 2)),
+                plan=[], proposal_validated=False, validation_errors=[message], message=message)
+
+
+def _period_capacities(capacities, horizon):
+    return {item['category']: max(0, math.floor(item['reduction_capacity'] * horizon / 30 / REDUCTION_STEP + 1e-9) * REDUCTION_STEP)
+            for item in capacities if item['category'] in FLEXIBLE_CATEGORIES}
+
+
+def validate_support_plan(forecast, safety_buffer, capacities, actions, confidence):
+    """Validate untrusted category adjustments from a customer or an LLM.
+
+    Caller supplies freshly computed forecast/capacities; never trust copies
+    supplied by the LLM. Validation is NOT customer approval or execution.
+    """
+    if confidence == 'low':
+        return _review(forecast, safety_buffer, 'The forecast is too uncertain for a firm spending plan.')
+    if not isinstance(actions, list) or not 1 <= len(actions) <= len(FLEXIBLE_CATEGORIES):
+        return _review(forecast, safety_buffer, 'Provide one to four flexible spending adjustments.')
     horizon = len(forecast['days'])
-    required_daily = max(max(0, safety_buffer - day['balance']) / offset
-                         for offset, day in enumerate(forecast['days'], 1))
-    remaining = math.ceil(required_daily * horizon * 100 - 1e-9) / 100
-    plan = []
-    for capacity in capacities:
-        if capacity['category'] not in FLEXIBLE_CATEGORIES:
-            continue
-        available = math.floor(capacity['reduction_capacity'] * horizon / 30 * 100 + 1e-9) / 100
-        reduction = min(remaining, available)
-        if reduction > 0:
-            plan.append({"category": capacity["category"], "reduce_by": round(reduction, 2)})
-            remaining = round(remaining - reduction, 2)
-        if remaining <= 0:
-            break
-    total = round(sum(action['reduce_by'] for action in plan), 2)
+    limits = _period_capacities(capacities, horizon)
+    seen, plan = set(), []
+    for action in actions:
+        if not isinstance(action, dict) or set(action) != {'category', 'reduce_by'}:
+            return _review(forecast, safety_buffer, 'Each adjustment needs only category and reduce_by.')
+        category = action['category']
+        if not isinstance(category, str) or category not in limits or category in seen:
+            return _review(forecast, safety_buffer, 'Category is protected, unavailable, unknown or repeated.')
+        seen.add(category)
+        try:
+            amount = _money(action['reduce_by'])
+        except ValueError as error:
+            return _review(forecast, safety_buffer, str(error))
+        if amount < MINIMUM_REDUCTION or amount % REDUCTION_STEP != 0:
+            return _review(forecast, safety_buffer, 'Use reductions of at least €10 in €5 steps.')
+        if amount > limits[category]:
+            return _review(forecast, safety_buffer, 'Reduction exceeds the personal capacity for this period.')
+        plan.append(dict(category=category, reduce_by=amount))
+    total = sum(action['reduce_by'] for action in plan)
     adjusted = [dict(date=day['date'], balance=round(day['balance'] + total * offset / horizon, 2))
                 for offset, day in enumerate(forecast['days'], 1)]
     new_lowest = min(day['balance'] for day in adjusted)
-    if remaining > 0 or new_lowest < safety_buffer or total / horizon > forecast['daily_variable_spend']:
-        return {
-            "status": "review_needed",
-            "gap_amount": gap_amount,
-            "plan": plan,
-            "message": "A safe reduction plan cannot fully restore your buffer. Offer a review or human support.",
-        }
-    return {
-        "status": "support_available",
-        "gap_amount": gap_amount,
-        "plan": plan,
-        "new_lowest_predicted_balance": new_lowest,
-        "adjusted_days": adjusted,
-        "total_reduction": total,
-        "start_date": forecast['days'][0]['date'],
-        "end_date": forecast['days'][-1]['date'],
-        "assumption": "Spending reductions start tomorrow and accrue evenly across the forecast period.",
-        "customer_approval_required": True,
-    }
+    if new_lowest < safety_buffer or total / horizon > forecast['daily_variable_spend']:
+        return _review(forecast, safety_buffer, 'These adjustments do not protect every forecast day within available spending.')
+    return dict(status='support_available', kind='spending_reduction',
+                gap_amount=max(0, round(safety_buffer - forecast['lowest_predicted_balance'], 2)),
+                plan=plan, proposal_validated=True, new_lowest_predicted_balance=new_lowest,
+                adjusted_days=adjusted, total_reduction=total,
+                start_date=forecast['days'][0]['date'], end_date=forecast['days'][-1]['date'],
+                assumption='Spending reductions start tomorrow and accrue evenly across the forecast period.',
+                customer_approval_required=True)
+
+
+def create_support_plan(forecast, safety_buffer, capacities, confidence):
+    gap_amount = max(0.0, round(float(safety_buffer) - forecast['lowest_predicted_balance'], 2))
+    if gap_amount == 0:
+        return dict(status='safe', gap_amount=0.0, plan=[])
+    if confidence == 'low':
+        return _review(forecast, safety_buffer, 'The forecast is too uncertain for a firm spending plan.')
+    horizon = len(forecast['days'])
+    required_daily = max(max(0, safety_buffer - day['balance']) / offset
+                         for offset, day in enumerate(forecast['days'], 1))
+    remaining = math.ceil(required_daily * horizon / REDUCTION_STEP - 1e-9) * REDUCTION_STEP
+    plan = []
+    for category, available in _period_capacities(capacities, horizon).items():
+        if available < MINIMUM_REDUCTION:
+            continue
+        reduction = min(available, max(MINIMUM_REDUCTION, remaining))
+        plan.append(dict(category=category, reduce_by=reduction))
+        remaining -= reduction
+        if remaining <= 0:
+            break
+    if remaining > 0:
+        return _review(forecast, safety_buffer, 'No practical spending plan can restore the buffer within the estimated capacity.')
+    return validate_support_plan(forecast, safety_buffer, capacities, plan, confidence)
+
+
+def create_savings_proposal(forecast, current_balance, safety_buffer, confidence,
+                            eligible=True, proposed_amount=None):
+    """Suggest a one-off allocation to savings, never a transfer execution.
+
+    Demo policy: retain the buffer plus max(€100, seven days of variable spend),
+    suggest 25% of remaining headroom rounded down to €25, minimum €50.
+    An edited proposal may use at most that same conservative allowance.
+    """
+    reserve = round(max(100, 7 * forecast['daily_variable_spend']), 2)
+    headroom = max(0, min(float(current_balance), forecast['lowest_predicted_balance']) - safety_buffer - reserve)
+    allowance = math.floor(headroom * 0.25 / SAVINGS_STEP) * SAVINGS_STEP
+    available = eligible and confidence == 'high' and len(forecast['days']) >= 30 and allowance >= MINIMUM_SAVINGS
+    if not available:
+        if proposed_amount is not None:
+            return _review(forecast, safety_buffer, 'A savings proposal is unavailable with this history, forecast or preference.')
+        return dict(status='safe', gap_amount=0.0, plan=[])
+    try:
+        amount = allowance if proposed_amount is None else _money(proposed_amount)
+    except ValueError as error:
+        return _review(forecast, safety_buffer, str(error))
+    if amount < MINIMUM_SAVINGS or amount % SAVINGS_STEP != 0 or amount > allowance:
+        return _review(forecast, safety_buffer, 'Savings amount must be at least €50, in €25 steps, within the calculated allowance.')
+    adjusted = [dict(date=day['date'], balance=round(day['balance'] - amount, 2)) for day in forecast['days']]
+    return dict(status='savings_opportunity', kind='savings', gap_amount=0.0, plan=[],
+                savings_amount=amount, max_savings_proposal=allowance, extra_reserve=reserve,
+                new_lowest_predicted_balance=min(day['balance'] for day in adjusted),
+                adjusted_days=adjusted, proposal_validated=True,
+                start_date=forecast['days'][0]['date'], end_date=forecast['days'][-1]['date'],
+                assumption='One allocation to savings at the start of the forecast; no interest or automatic monthly repetition.',
+                customer_approval_required=True, execution_supported=False)
 
 
 def update_forecast_learning(customer_id, predicted_variable_spend, actual_variable_spend,
@@ -336,11 +406,22 @@ def update_forecast_learning(customer_id, predicted_variable_spend, actual_varia
 
 
 def future(customer: dict[str, Any], transactions: list[dict[str, Any]], as_of: date,
-           horizon_days: int = 30, learning_state=None) -> dict[str, Any]:
+           horizon_days: int = 30, learning_state=None, preferences=None, proposal=None) -> dict[str, Any]:
     """Standalone tool; caller supplies history, snapshot and optional learned state."""
     if type(horizon_days) is not int or not 1 <= horizon_days <= 90:
         raise ValueError('horizon_days must be between 1 and 90')
     as_of = _as_date(as_of)
+    balance = _money(customer['current_balance'])
+    safety_buffer = _money(customer['safety_buffer'])
+    if safety_buffer < 0:
+        raise ValueError('safety_buffer must be nonnegative')
+    preferences = {} if preferences is None else preferences
+    if not isinstance(preferences, dict) or set(preferences) - {'protected_categories', 'suggest_savings'}:
+        raise ValueError('Unsupported preferences')
+    protected = preferences.get('protected_categories', [])
+    suggest_savings = preferences.get('suggest_savings', True)
+    if not isinstance(protected, list) or not all(isinstance(item, str) for item in protected) or type(suggest_savings) is not bool:
+        raise ValueError('Expected protected_categories list and suggest_savings boolean')
     adjustment = 0.0
     if learning_state:
         if learning_state['customer_id'] != customer['customer_id'] or _as_date(learning_state['observation_end']) > as_of:
@@ -349,10 +430,33 @@ def future(customer: dict[str, Any], transactions: list[dict[str, Any]], as_of: 
         if not math.isfinite(adjustment):
             raise ValueError('Invalid learned adjustment')
     enriched = detect_recurring_patterns([row for row in transactions if _as_date(row['transaction_date']) <= as_of])
-    forecast = build_forecast(customer["current_balance"], enriched, as_of, horizon_days, adjustment)
+    forecast = build_forecast(balance, enriched, as_of, horizon_days, adjustment)
     confidence_score, confidence = calculate_confidence(enriched)
     capacities = calculate_reduction_capacity(enriched, as_of)
-    plan = create_support_plan(forecast, float(customer["safety_buffer"]), capacities, confidence)
+    capacities = [item for item in capacities if item['category'] not in protected]
+    plan = create_support_plan(forecast, safety_buffer, capacities, confidence)
+    history_covered = bool(enriched) and min(item['date'] for item in enriched) <= as_of - timedelta(days=89)
+    has_expected_income = any(event['transaction_type'] == 'income'
+                              for day in forecast['days'] for event in day['recurring_events'])
+    savings_eligible = suggest_savings and history_covered and has_expected_income
+    if proposal is not None:
+        if not isinstance(proposal, dict):
+            raise ValueError('proposal must be an object')
+        if proposal.get('type') == 'spending_reduction' and set(proposal) == {'type', 'actions'}:
+            if forecast['lowest_predicted_balance'] >= safety_buffer:
+                plan = _review(forecast, safety_buffer, 'There is no predicted gap requiring a spending reduction.')
+            else:
+                plan = validate_support_plan(forecast, safety_buffer, capacities, proposal['actions'], confidence)
+        elif proposal.get('type') == 'savings' and set(proposal) == {'type', 'amount'}:
+            if forecast['lowest_predicted_balance'] < safety_buffer or proposal['amount'] is None:
+                plan = _review(forecast, safety_buffer, 'Savings cannot be proposed while a buffer gap exists or without an amount.')
+            else:
+                plan = create_savings_proposal(forecast, balance, safety_buffer, confidence,
+                                               savings_eligible, proposal['amount'])
+        else:
+            raise ValueError('Unsupported proposal type or fields')
+    elif plan['status'] == 'safe':
+        plan = create_savings_proposal(forecast, balance, safety_buffer, confidence, savings_eligible)
 
     drivers = []
     for day in forecast["days"]:
@@ -376,6 +480,12 @@ def future(customer: dict[str, Any], transactions: list[dict[str, Any]], as_of: 
             "drivers": drivers,
         },
         "recommendation": plan,
+        "recommendation_constraints": {
+            "reduction_step": REDUCTION_STEP, "minimum_reduction": MINIMUM_REDUCTION,
+            "period_reduction_limits": _period_capacities(capacities, horizon_days),
+            "protected_categories": sorted(ESSENTIAL_CATEGORIES | set(protected)),
+            "savings_step": SAVINGS_STEP, "minimum_savings": MINIMUM_SAVINGS,
+        },
         "derived_transaction_fields": [
             "transaction_type", "is_recurring", "is_essential", "is_flexible"
         ],

@@ -1,0 +1,15 @@
+# KBC Future
+
+KBC Future is a personal financial digital twin designed to help customers anticipate cash-flow pressure and act before it becomes a problem. It combines a model of each customer's financial rhythm with clear, personalised guidance, helping them understand what their money needs to cover before their next income arrives.
+
+A current account balance tells a customer what they have today. It does not explain whether upcoming bills and everyday spending could leave them short next week. KBC Future addresses this gap by connecting transaction signals to a specific customer need: protecting a chosen financial safety buffer at the right moment.
+
+The engine identifies recurring income and payments, estimates everyday spending from the customer's own history, and forecasts daily balances over the next 30 days. When it predicts a buffer breach, it proposes meaningful, rounded reductions in flexible spending and simulates their effect over time. Essential expenses such as rent, groceries and healthcare are protected. With a stable surplus, it can instead suggest setting aside money while retaining the customer's buffer and an extra reserve. Uncertain forecasts or infeasible plans call for review.
+
+The app uses an LLM to explain what may happen, why it matters now and what could help. It can suggest adjustments based on the customer's preferences, such as reducing shopping instead of dining or setting aside a smaller amount. The engine recalculates and validates each proposal before the customer is asked to approve it. The customer can also dismiss the suggestion or provide feedback. Approval in this prototype does not move money or restrict spending.
+
+Our prototype uses three synthetic customers and 389 transactions covering six months. Alex has €1,940 today, but his forecast falls to €184 before his next salary, below his chosen €250 buffer. Reducing dining by €70 and shopping by €10 over 30 days brings the simulated minimum to €256, assuming savings accrue evenly from tomorrow. Sam's stable surplus supports a proposal to set aside €625 while retaining a forecast minimum current-account balance of €2,345.67. Robin's irregular income calls for review rather than a firm recommendation.
+
+KBC Future includes a learning calculation that compares predicted spending with actual spending and gradually corrects future forecasts. This provides a way to adapt to each customer's financial rhythm as new observations become available. Customer feedback adds context for adjusting recommendations, while automatic learning of advice preferences is a future extension. Twenty-three automated checks cover the algorithm and synthetic fixtures.
+
+The ambition is a reusable decision engine that could meet the challenge's target of serving more than 2.3 million customers across app, adviser and other service channels. Customers would gain earlier warning and greater control; KBC could provide more relevant support and reduce avoidable financial stress. The prototype demonstrates the mechanism, while real-world accuracy, customer benefit and performance at that scale remain to be validated.

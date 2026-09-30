@@ -4,7 +4,8 @@ from datetime import date
 import unittest
 
 from future_engine import (classify_transaction, create_support_plan,
-                           detect_recurring_patterns, future, update_forecast_learning)
+                           create_savings_proposal, detect_recurring_patterns,
+                           future, update_forecast_learning)
 
 
 class KbcFutureEngineTests(unittest.TestCase):
@@ -62,9 +63,10 @@ class KbcFutureEngineTests(unittest.TestCase):
         self.assertEqual(result["recommendation"]["status"], "review_needed")
 
 
-    def test_safe_customer_receives_no_reduction_plan(self):
+    def test_safe_customer_with_savings_disabled_receives_no_plan(self):
         customer = {**self.customer, "current_balance": 4000.0}
-        result = future(customer, self.transactions, date(2026, 9, 30))
+        result = future(customer, self.transactions, date(2026, 9, 30),
+                        preferences={'suggest_savings': False})
         self.assertFalse(result["risk"]["buffer_breach"])
         self.assertEqual(result["recommendation"]["status"], "safe")
         self.assertEqual(result["recommendation"]["plan"], [])
@@ -139,6 +141,58 @@ class KbcFutureEngineTests(unittest.TestCase):
         rows = [self.transaction(str(month), month, day, 1000, 'Client', 'income', 'bank_transfer')
                 for month, day in [(7, 2), (8, 16), (9, 28)]]
         self.assertTrue(all(not row['is_recurring'] for row in detect_recurring_patterns(rows)))
+
+    def test_default_reductions_are_practical_amounts(self):
+        result = future(self.customer, self.transactions, date(2026, 9, 30))
+        for action in result['recommendation']['plan']:
+            self.assertGreaterEqual(action['reduce_by'], 10)
+            self.assertEqual(action['reduce_by'] % 5, 0)
+
+    def test_savings_proposal_protects_buffer_and_extra_reserve(self):
+        customer = {**self.customer, 'current_balance': 4000}
+        result = future(customer, self.transactions, date(2026, 9, 30))
+        plan = result['recommendation']
+        self.assertEqual(plan['status'], 'savings_opportunity')
+        self.assertEqual(plan['savings_amount'] % 25, 0)
+        self.assertTrue(all(day['balance'] >= 250 + plan['extra_reserve'] for day in plan['adjusted_days']))
+        self.assertTrue(plan['customer_approval_required'])
+        self.assertFalse(plan['execution_supported'])
+
+    def test_savings_cannot_spend_future_income_before_it_arrives(self):
+        forecast = dict(lowest_predicted_balance=2000, daily_variable_spend=10,
+                        days=[dict(date=f'2026-10-{day:02d}', balance=2000) for day in range(1, 31)])
+        plan = create_savings_proposal(forecast, 260, 250, 'high')
+        self.assertEqual(plan['status'], 'safe')
+
+    def test_low_confidence_and_short_horizon_do_not_offer_savings(self):
+        customer = {**self.customer, 'current_balance': 4000}
+        short = future(customer, self.transactions, date(2026, 9, 30), horizon_days=7)
+        self.assertNotEqual(short['recommendation']['status'], 'savings_opportunity')
+        sparse = future(customer, [], date(2026, 9, 30))
+        self.assertNotEqual(sparse['recommendation']['status'], 'savings_opportunity')
+
+    def test_llm_cannot_reduce_protected_unknown_duplicate_or_tiny_categories(self):
+        proposals = [
+            [{'category': 'rent', 'reduce_by': 100}],
+            [{'category': 'mystery', 'reduce_by': 100}],
+            [{'category': 'dining', 'reduce_by': 1.34}],
+            [{'category': 'dining', 'reduce_by': -20}],
+            [{'category': 'dining', 'reduce_by': float('nan')}],
+            [{'category': 'dining', 'reduce_by': 20}, {'category': 'dining', 'reduce_by': 20}],
+            [{'category': 'shopping', 'reduce_by': 10000}],
+        ]
+        for actions in proposals:
+            with self.subTest(actions=actions):
+                result = future(self.customer, self.transactions, date(2026, 9, 30),
+                                proposal={'type': 'spending_reduction', 'actions': actions})
+                self.assertFalse(result['recommendation']['proposal_validated'])
+                self.assertEqual(result['recommendation']['plan'], [])
+
+    def test_savings_proposal_cannot_be_used_to_fix_a_cash_gap(self):
+        result = future(self.customer, self.transactions, date(2026, 9, 30),
+                        proposal={'type': 'savings', 'amount': 50})
+        self.assertEqual(result['recommendation']['status'], 'review_needed')
+        self.assertFalse(result['recommendation']['proposal_validated'])
 
 
 if __name__ == "__main__":

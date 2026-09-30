@@ -133,7 +133,7 @@ def seed_sql():
            [dict(customer_id=c["customer_id"], advice_opt_in=1, notification_preference="in_app") for c in customers])
     insert("products", ["product_id", "product_type", "product_amount"],
            [dict(product_id=c["customer_id"] + 1000, product_type="current_account", product_amount=c["current_balance"]) for c in customers])
-    insert("client_product_link", ["customer_id", "product_id"],
+    insert("customer_product", ["customer_id", "product_id"],
            [dict(customer_id=c["customer_id"], product_id=c["customer_id"] + 1000) for c in customers])
     insert("transactions", ["transaction_id", "customer_id", "product_id", "transaction_date", "amount", "merchant", "merchant_category", "payment_method"], transactions)
     insert("events", ["event_id", "event_type", "event_date", "event_value"],
