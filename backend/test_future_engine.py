@@ -3,7 +3,8 @@
 from datetime import date
 import unittest
 
-from future_engine import classify_transaction, detect_recurring_patterns, future
+from future_engine import (classify_transaction, create_support_plan,
+                           detect_recurring_patterns, future, update_forecast_learning)
 
 
 class KbcFutureEngineTests(unittest.TestCase):
@@ -89,6 +90,55 @@ class KbcFutureEngineTests(unittest.TestCase):
         self.assertTrue(all(not row["is_recurring"] for row in groceries))
         rent = [row for row in rows if row["category"] == "rent"]
         self.assertTrue(all(row["is_recurring"] for row in rent))
+
+    def test_late_savings_cannot_repair_an_early_gap(self):
+        forecast = dict(lowest_predicted_balance=200, daily_variable_spend=10,
+                        days=[dict(date=f'2026-10-{day:02d}', balance=200 if day == 1 else 500)
+                              for day in range(1, 31)])
+        result = create_support_plan(forecast, 250,
+                                     [dict(category='dining', reduction_capacity=100)], 'high')
+        self.assertEqual(result['status'], 'review_needed')
+
+    def test_approved_proposal_protects_every_simulated_day(self):
+        result = future(self.customer, self.transactions, date(2026, 9, 30))
+        plan = result['recommendation']
+        self.assertEqual(plan['status'], 'support_available')
+        self.assertTrue(all(day['balance'] >= self.customer['safety_buffer'] for day in plan['adjusted_days']))
+        self.assertGreater(plan['total_reduction'], result['risk']['gap_amount'])
+
+    def test_learning_changes_next_forecast_and_reduces_error_on_separate_example(self):
+        baseline = future(self.customer, self.transactions, date(2026, 9, 30))
+        daily = baseline['forecast']['daily_variable_spend']
+        # Completed observation: €4/day above the saved prediction.
+        state = update_forecast_learning(1, daily * 7, (daily + 4) * 7,
+                                         7, date(2026, 9, 30))
+        updated = future(self.customer, self.transactions, date(2026, 9, 30), learning_state=state)
+        self.assertEqual(state['daily_spend_adjustment'], 1.2)
+        self.assertAlmostEqual(updated['forecast']['daily_variable_spend'] - daily, 1.2, places=2)
+        # Separate future example, not fed to the updater: same €4/day shift.
+        held_out_actual = daily + 4
+        self.assertLess(abs(updated['forecast']['daily_variable_spend'] - held_out_actual),
+                        abs(daily - held_out_actual))
+        self.assertEqual(updated['forecast']['days'][0]['recurring_events'],
+                         baseline['forecast']['days'][0]['recurring_events'])
+
+    def test_learning_rejects_repeated_windows_and_wrong_customer(self):
+        state = update_forecast_learning(1, 70, 98, 7, date(2026, 9, 30))
+        with self.assertRaises(ValueError):
+            update_forecast_learning(1, 70, 98, 7, date(2026, 9, 30), state)
+        with self.assertRaises(ValueError):
+            future({**self.customer, 'customer_id': 2}, self.transactions,
+                   date(2026, 9, 30), learning_state=state)
+
+    def test_future_transactions_do_not_leak_into_prediction(self):
+        baseline = future(self.customer, self.transactions, date(2026, 9, 30))
+        future_row = self.transaction('future', 10, 2, -10000, 'Future Shop', 'shopping', 'card')
+        self.assertEqual(baseline, future(self.customer, self.transactions + [future_row], date(2026, 9, 30)))
+
+    def test_variable_monthly_dates_are_not_treated_as_reliable_schedule(self):
+        rows = [self.transaction(str(month), month, day, 1000, 'Client', 'income', 'bank_transfer')
+                for month, day in [(7, 2), (8, 16), (9, 28)]]
+        self.assertTrue(all(not row['is_recurring'] for row in detect_recurring_patterns(rows)))
 
 
 if __name__ == "__main__":

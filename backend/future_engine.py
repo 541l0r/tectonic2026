@@ -8,6 +8,7 @@ expense essential, or create an action plan.
 from __future__ import annotations
 
 import calendar
+import math
 from collections import defaultdict
 from datetime import date, datetime, timedelta
 from statistics import median
@@ -116,7 +117,9 @@ def detect_recurring_patterns(transactions: list[dict[str, Any]]) -> list[dict[s
             for item in group
         )
         monthly = all(gap == 1 for gap in gaps)
-        if monthly and stable_amount and scheduled_method:
+        days = [item['date'].day for item in group]
+        stable_date = max(abs(day - median(days)) for day in days) <= 5
+        if monthly and stable_amount and scheduled_method and stable_date:
             recurring_ids.update(item["transaction_id"] for item in group)
 
     for transaction in enriched:
@@ -171,13 +174,15 @@ def build_forecast(
     enriched: list[dict[str, Any]],
     as_of: date,
     horizon_days: int = 30,
+    daily_spend_adjustment: float = 0.0,
 ) -> dict[str, Any]:
     """Forecast balances from recurring events and a conservative personal spend rate."""
     events_by_date: dict[date, list[dict[str, Any]]] = defaultdict(list)
     for event in _recurring_events(enriched, as_of, horizon_days):
         events_by_date[event["date"]].append(event)
 
-    daily_variable_spend = _daily_variable_spend(enriched, as_of)
+    baseline_spend = _daily_variable_spend(enriched, as_of)
+    daily_variable_spend = max(0.0, baseline_spend + daily_spend_adjustment)
     balance = float(current_balance)
     days: list[dict[str, Any]] = []
     for offset in range(1, horizon_days + 1):
@@ -196,6 +201,8 @@ def build_forecast(
         "lowest_predicted_balance": lowest["balance"],
         "lowest_balance_date": lowest["date"],
         "daily_variable_spend": round(daily_variable_spend, 2),
+        "baseline_daily_variable_spend": round(baseline_spend, 2),
+        "daily_spend_adjustment": round(daily_spend_adjustment, 4),
     }
 
 
@@ -216,12 +223,14 @@ def calculate_confidence(enriched: list[dict[str, Any]]) -> tuple[float, str]:
 def calculate_reduction_capacity(enriched: list[dict[str, Any]], as_of: date) -> list[dict[str, Any]]:
     """Use the individual's own low-but-achieved monthly spend as a safe floor."""
     monthly_by_category: dict[str, dict[tuple[int, int], float]] = defaultdict(lambda: defaultdict(float))
-    first_month = date(as_of.year, as_of.month, 1)
+    # Only the latest three complete calendar months; partial months would
+    # artificially lower the spending floor.
+    last_complete = as_of if as_of.day == calendar.monthrange(as_of.year, as_of.month)[1] else date(as_of.year, as_of.month, 1) - timedelta(days=1)
     for item in enriched:
         if not item["is_flexible"]:
             continue
         month_key = (item["date"].year, item["date"].month)
-        if _months_between(item["date"], first_month) <= 3:
+        if 0 <= _months_between(item["date"], last_complete) < 3:
             monthly_by_category[item["category"]][month_key] += abs(item["amount"])
 
     capacities = []
@@ -255,16 +264,28 @@ def create_support_plan(
             "message": "Your income pattern is irregular, so KBC Future will not make a firm spending recommendation.",
         }
 
-    remaining = gap_amount
+    # Reductions accrue gradually. Find the daily saving needed to protect
+    # EVERY forecast day, then cap it using monthly flexible capacity.
+    horizon = len(forecast['days'])
+    required_daily = max(max(0, safety_buffer - day['balance']) / offset
+                         for offset, day in enumerate(forecast['days'], 1))
+    remaining = math.ceil(required_daily * horizon * 100 - 1e-9) / 100
     plan = []
     for capacity in capacities:
-        reduction = min(remaining, capacity["reduction_capacity"])
+        if capacity['category'] not in FLEXIBLE_CATEGORIES:
+            continue
+        available = math.floor(capacity['reduction_capacity'] * horizon / 30 * 100 + 1e-9) / 100
+        reduction = min(remaining, available)
         if reduction > 0:
             plan.append({"category": capacity["category"], "reduce_by": round(reduction, 2)})
             remaining = round(remaining - reduction, 2)
         if remaining <= 0:
             break
-    if remaining > 0:
+    total = round(sum(action['reduce_by'] for action in plan), 2)
+    adjusted = [dict(date=day['date'], balance=round(day['balance'] + total * offset / horizon, 2))
+                for offset, day in enumerate(forecast['days'], 1)]
+    new_lowest = min(day['balance'] for day in adjusted)
+    if remaining > 0 or new_lowest < safety_buffer or total / horizon > forecast['daily_variable_spend']:
         return {
             "status": "review_needed",
             "gap_amount": gap_amount,
@@ -275,15 +296,60 @@ def create_support_plan(
         "status": "support_available",
         "gap_amount": gap_amount,
         "plan": plan,
-        "new_lowest_predicted_balance": round(forecast["lowest_predicted_balance"] + gap_amount, 2),
+        "new_lowest_predicted_balance": new_lowest,
+        "adjusted_days": adjusted,
+        "total_reduction": total,
+        "start_date": forecast['days'][0]['date'],
+        "end_date": forecast['days'][-1]['date'],
+        "assumption": "Spending reductions start tomorrow and accrue evenly across the forecast period.",
         "customer_approval_required": True,
     }
 
 
-def future(customer: dict[str, Any], transactions: list[dict[str, Any]], as_of: date, horizon_days: int = 30) -> dict[str, Any]:
-    """The single KBC Future tool exposed by the API."""
-    enriched = detect_recurring_patterns(transactions)
-    forecast = build_forecast(customer["current_balance"], enriched, as_of, horizon_days)
+def update_forecast_learning(customer_id, predicted_variable_spend, actual_variable_spend,
+                             observed_days, observation_end, previous_state=None, learning_rate=0.3):
+    """Update a customer-specific daily bias after a completed observation window.
+
+    Predicted spend is the saved prediction INCLUDING the previous correction.
+    Actual spend must cover the same variable categories and dates. The caller
+    persists the returned state; feedback clicks are not training observations.
+    """
+    if type(observed_days) is not int or observed_days <= 0:
+        raise ValueError('observed_days must be a positive integer')
+    values = [float(predicted_variable_spend), float(actual_variable_spend), float(learning_rate)]
+    if not all(math.isfinite(value) for value in values) or min(values[:2]) < 0 or not 0 < learning_rate <= 1:
+        raise ValueError('Expected finite nonnegative spending and learning_rate in (0, 1]')
+    state = previous_state or {}
+    end = _as_date(observation_end)
+    if state:
+        if state['customer_id'] != customer_id:
+            raise ValueError('Learning state belongs to another customer')
+        start = end - timedelta(days=observed_days - 1)
+        if start <= _as_date(state['observation_end']):
+            raise ValueError('Observation windows must not overlap or repeat')
+    daily_error = (float(actual_variable_spend) - float(predicted_variable_spend)) / observed_days
+    return dict(customer_id=customer_id,
+                daily_spend_adjustment=round(float(state.get('daily_spend_adjustment', 0)) + learning_rate * daily_error, 4),
+                observation_end=end.isoformat(),
+                observation_count=state.get('observation_count', 0) + 1,
+                last_daily_error=round(daily_error, 4))
+
+
+def future(customer: dict[str, Any], transactions: list[dict[str, Any]], as_of: date,
+           horizon_days: int = 30, learning_state=None) -> dict[str, Any]:
+    """Standalone tool; caller supplies history, snapshot and optional learned state."""
+    if type(horizon_days) is not int or not 1 <= horizon_days <= 90:
+        raise ValueError('horizon_days must be between 1 and 90')
+    as_of = _as_date(as_of)
+    adjustment = 0.0
+    if learning_state:
+        if learning_state['customer_id'] != customer['customer_id'] or _as_date(learning_state['observation_end']) > as_of:
+            raise ValueError('Learning state must belong to this customer and precede the forecast')
+        adjustment = float(learning_state['daily_spend_adjustment'])
+        if not math.isfinite(adjustment):
+            raise ValueError('Invalid learned adjustment')
+    enriched = detect_recurring_patterns([row for row in transactions if _as_date(row['transaction_date']) <= as_of])
+    forecast = build_forecast(customer["current_balance"], enriched, as_of, horizon_days, adjustment)
     confidence_score, confidence = calculate_confidence(enriched)
     capacities = calculate_reduction_capacity(enriched, as_of)
     plan = create_support_plan(forecast, float(customer["safety_buffer"]), capacities, confidence)
