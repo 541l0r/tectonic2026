@@ -50,8 +50,8 @@ CREATE TABLE products (
 -- CUSTOMER / PRODUCT LINK
 -- ============================================
 
-CREATE TABLE client_product_link (
-    client_product_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE customer_product (
+    customer_product_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     customer_id BIGINT UNSIGNED NOT NULL,
     product_id BIGINT UNSIGNED NOT NULL,
 
@@ -135,10 +135,10 @@ CREATE TABLE customer_events (
 -- ============================================
 
 CREATE INDEX idx_cpl_customer
-    ON client_product_link(customer_id);
+    ON customer_product(customer_id);
 
 CREATE INDEX idx_cpl_product
-    ON client_product_link(product_id);
+    ON customer_product(product_id);
 
 CREATE INDEX idx_transactions_customer
     ON transactions(customer_id);
@@ -188,7 +188,7 @@ INSERT INTO products (product_id, product_type, product_amount) VALUES
     (2002, 'current_account', 4500.00),
     (2003, 'current_account', 900.00);
 
-INSERT INTO client_product_link (customer_id, product_id) VALUES
+INSERT INTO customer_product (customer_id, product_id) VALUES
     (1001, 2001),
     (1002, 2002),
     (1003, 2003);
