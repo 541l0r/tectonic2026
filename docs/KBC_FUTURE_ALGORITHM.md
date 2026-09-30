@@ -33,14 +33,15 @@ buffer. Reducing dining by €72 and shopping by €1.34 across 30 days brings t
 simulated minimum to €250.01. The plan exceeds €66 because savings accrue gradually.
 Sam gets `safe`; Robin's irregular income leads to `review_needed`.
 
-**How it improves.** `update_forecast_learning` compares saved predicted variable
-spending with actual spending over the same completed period. By default it adds 30% of the
-daily error to a personal correction, which `future(..., learning_state=state)`
-applies next time. Example: spending underestimated by €28 over seven days produces
-a +€1.20/day correction. Repeated/overlapping windows and another customer's state
-are rejected when the previous state is supplied. Damiens must persist the state and observations. A synthetic held-out
-example verifies reduced error for a stable spending shift; improvement in real
-use still needs measurement. Advice acceptance is feedback, not proof of benefit.
+**How it improves.** KBC Future compares what it predicted with what the customer
+actually spent, then adjusts the next forecast gradually. For example, if it
+predicted €70 for a week but the customer spent €98, spending was €4 higher per
+day. It adds €1.20 per day to the next forecast, correcting 30% of the difference
+to avoid overreacting. The prediction-learning calculation is implemented, and
+the forecast can use its correction. Automatic collection of actual outcomes,
+saving and reusing corrections, and learning from customer feedback
+(Approve/Adjust/Dismiss) still need app integration and development.
+Better accuracy must be checked over time.
 
 **LLM and customer.** The planned LLM explains the calculated result, then asks for
 approval, adjustment or dismissal; it must not invent figures or execute actions.

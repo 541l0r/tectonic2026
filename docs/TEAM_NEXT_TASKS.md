@@ -26,6 +26,16 @@ No reduction, transfer or other financial action has actually been executed.
 
 ## Damiens — connect data, algorithm and LLM
 
+**MVP integration choice:** the backend calls `future()` first, then sends the
+structured result to the LLM for explanation. The LLM does not need to call tools
+itself. Classification, recurrence, forecasting and plan simulation are internal
+functions of `future()`. Approval and feedback are explicit application actions;
+`update_forecast_learning()` runs later when actual spending is available.
+
+**Adjustment scope:** the existing calculation accepts a changed safety buffer
+or forecast horizon. Editing individual category budgets needs additional
+calculation support; do not present that as implemented or let the LLM invent it.
+
 1. Pull `main`. Query customer/profile/preferences and transactions from the existing
    tables, scoped to the authorized customer. For this demo use `as_of=2026-09-30`
    and `horizon_days=30`; balances are snapshots on that date. Include transactions
