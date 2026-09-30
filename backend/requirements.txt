@@ -1,3 +1,7 @@
-Flask>=3.0,<4.0
+Flask
 flask-cors
-gunicorn>=23.0,<24.0
+gunicorn
+SQLAlchemy
+PyMySQL
+cloud-sql-python-connector[pymysql]
+python-dotenv
