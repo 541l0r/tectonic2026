@@ -36,9 +36,25 @@ Copy `.env.example` to `.env` only when a provider is actually selected. No key 
 
 ## Docker
 
+### Production
+
 ```bash
-docker build -t hackaton-flask .
-docker run --rm -p 8080:8080   -e PORT=8080   hackaton-flask
+gcloud auth login
+
+gcloud config set project YOUR_PROJECT_ID
+
+gcloud services enable run.googleapis.com cloudbuild.googleapis.com
+
+gcloud run deploy my-app \
+  --source . \
+  --region europe-west1 \
+  --allow-unauthenticated
+
+gcloud run services update my-app   --region=europe-west1   --add-cloudsql-instances=hackaton-tectonic:europe-west1:hackaton-db   --update-env-vars DB_USER="hackaton-user",DB_PASS="TcEi@1983.pw",DB_NAME="hackaton",INSTANCE_CONNECTION_NAME="hackaton-tectonic:europe-west1:hackaton-db",APP_ENV="production"
+```
+
+```bash
+docker compose up -d
 ```
 
 ## Git remote
