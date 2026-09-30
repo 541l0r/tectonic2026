@@ -13,7 +13,7 @@ are ready for review, not a claim either teammate has accepted or completed them
 - `backend/future_engine.py`: callable `future(...)` and
   `update_forecast_learning(...)`. No API or frontend integration is included.
 - `scripts/future_demo_data.py`: reproducible fixture generator and runnable demo.
-- `docs/KBC_FUTURE_ALGORITHM.md`: one-page mechanism and limitations.
+- [KBC_FUTURE_ALGORITHM.md](../KBC_FUTURE_ALGORITHM.md): one-page mechanism and limitations.
 
 | Customer | Rows | Forecast minimum | Buffer | Expected decision |
 | --- | ---: | ---: | ---: | --- |

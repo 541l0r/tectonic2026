@@ -4,7 +4,7 @@ This is the live worksheet for the challenge. Fill it in step by step after the 
 
 ## 1. Capture and define the problem
 
-Mathieu leads the [opening ideation method](docs/IDEATION_METHOD.md); use this section to record its first exit check.
+Mathieu leads the [opening ideation method](IDEATION_METHOD.md); use this section to record its first exit check.
 
 **Target: 00:00–00:10.** Each person writes a problem statement before the team compares them.
 
@@ -30,7 +30,7 @@ Mathieu leads the [opening ideation method](docs/IDEATION_METHOD.md); use this s
 
 ## 2. Brainstorm and turn ideas into concepts
 
-Write a word or short phrase on each post-it, then brainstorm together. Afterward, group duplicates and keep distinct angles visible. All three can still add or combine ideas while discussing preferences. Give each shortlisted candidate one clear concept sentence here; assess its demo, data, and feasibility in section 3. Use the [global idea list and ten lenses](docs/IDEAS.md) only as prompts when relevant. Ask a mentor or organizer to clarify a material unknown when possible.
+Write a word or short phrase on each post-it, then brainstorm together. Afterward, group duplicates and keep distinct angles visible. All three can still add or combine ideas while discussing preferences. Give each shortlisted candidate one clear concept sentence here; assess its demo, data, and feasibility in section 3. Use the [global idea list and ten lenses](IDEAS.md) only as prompts when relevant. Ask a mentor or organizer to clarify a material unknown when possible.
 
 **Numbered groups / angles (or attach a photo of the wall):** 1. Reactive budgeting → proactive financial resilience. 2. Current balance → predicted future balance. 3. Generic category averages → personal financial rhythm. 4. Product recommendation → least-disruptive customer support. 5. One app screen → reusable cross-channel decision engine.
 
@@ -141,7 +141,7 @@ The selected concept above describes the proposed future KBC product. Now choose
 
 **Current blocker and decision:** [ ]
 
-**Feature and whole-product acceptance criteria:** [Mathieu drafts after MVP selection; all three agree on the checks. Verify Must-have features, then run the complete journey and relevant failure/fallback on the integrated build.] Use the short method and run sheet in [docs/ACCEPTANCE_CRITERIA.md](docs/ACCEPTANCE_CRITERIA.md).
+**Feature and whole-product acceptance criteria:** [Mathieu drafts after MVP selection; all three agree on the checks. Verify Must-have features, then run the complete journey and relevant failure/fallback on the integrated build.] Use the short method and run sheet in [docs/ACCEPTANCE_CRITERIA.md](ACCEPTANCE_CRITERIA.md).
 
 **Integration check:** [Branch/build state, UI → API result, owner of next fix, and next run time.]
 

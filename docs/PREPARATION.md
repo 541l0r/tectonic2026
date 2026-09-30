@@ -83,12 +83,12 @@ If AI is involved:
 
 ### Before Wednesday
 
-- [x] Prepare a lightweight ideation method ([opening method](docs/IDEATION_METHOD.md) and [day-of decision board](WORKFLOW_TEMPLATE.md#2-brainstorm-and-turn-ideas-into-concepts)).
+- [x] Prepare a lightweight ideation method ([opening method](IDEATION_METHOD.md) and [day-of decision board](WORKFLOW_TEMPLATE.md#2-brainstorm-and-turn-ideas-into-concepts)).
 - [x] Prepare a fast MVP-selection method ([general rule](COMMAND.md#6-from-brief-to-mvp) and [day-of selection template](WORKFLOW_TEMPLATE.md#4-select-the-four-hour-proof-within-that-product-concept)).
 - [x] Define Must / Should / Could / Won't criteria ([definitions, boundary test, and worked example](COMMAND.md#6-from-brief-to-mvp); [day-of fields](WORKFLOW_TEMPLATE.md#4-select-the-four-hour-proof-within-that-product-concept)).
-- [x] Prepare a simple acceptance-criteria template ([method, worked example, and run sheet](docs/ACCEPTANCE_CRITERIA.md)).
+- [x] Prepare a simple acceptance-criteria template ([method, worked example, and run sheet](ACCEPTANCE_CRITERIA.md)).
 - [x] Prepare business-value / KPI questions ([KBC-track questions](COMMAND.md#6-from-brief-to-mvp) and [day-of KPI fields](WORKFLOW_TEMPLATE.md#3-choose-the-kbc-product-concept-and-outline-its-vision)).
-- [x] Review how Prelint could support requirements/specification checking ([review and decision](docs/PRELINT.md)); connect the eventual check to the acceptance criteria.
+- [x] Review how Prelint could support requirements/specification checking ([review and decision](PRELINT.md)); connect the eventual check to the acceptance criteria.
 - [x] Prepare the product/business structure for the final pitch ([jury questions and business story](COMMAND.md#8-acceptance-and-jury-story); [day-of proof checks](WORKFLOW_TEMPLATE.md#6-final-proof)).
 - [x] Define how we quickly decide which capabilities are relevant to the challenge ([scope and capability gate](COMMAND.md#6-from-brief-to-mvp); [MVP selection steps](WORKFLOW_TEMPLATE.md#4-select-the-four-hour-proof-within-that-product-concept)).
 
@@ -104,7 +104,7 @@ Then:
 - Explore feature options and run targeted searches to answer questions raised by the real brief; share findings with the team.
 - Define acceptance criteria.
 - Prepare test scenarios.
-- When integration or a scope change raises doubt, run the lightweight [product-alignment check](docs/PRELINT.md#our-simpler-alignment-check) against the agreed Must-have acceptance criteria.
+- When integration or a scope change raises doubt, run the lightweight [product-alignment check](PRELINT.md#our-simpler-alignment-check) against the agreed Must-have acceptance criteria.
 - Track integration status.
 - Support frontend or backend coding on bounded tasks agreed with Diana or Damiens, including the files and interface to touch.
 - Prepare business value and KPI.
@@ -375,7 +375,7 @@ Check whether implementation remains aligned with:
 
 Especially useful if the challenge contains strict rules or compliance requirements.
 
-Mathieu's [one-page Prelint review](docs/PRELINT.md) explains its capabilities and why we do not plan to use it in our four-hour, no-PR workflow.
+Mathieu's [one-page Prelint review](PRELINT.md) explains its capabilities and why we do not plan to use it in our four-hour, no-PR workflow.
 
 ---
 
@@ -517,7 +517,7 @@ Rule:
 
 # 12. Four-hour working rhythm
 
-Confirm the actual deadline, pitch slot, and rules when the challenge is released. The opening has one handoff target: **about 40 minutes to reach the interface discussion**. Move sooner when the team is ready; resolve a material rule or data question before committing to a dependent build. The [opening method](docs/IDEATION_METHOD.md) and [day-of guide](WORKFLOW_TEMPLATE.md) hold the detailed prompts.
+Confirm the actual deadline, pitch slot, and rules when the challenge is released. The opening has one handoff target: **about 40 minutes to reach the interface discussion**. Move sooner when the team is ready; resolve a material rule or data question before committing to a dependent build. The [opening method](IDEATION_METHOD.md) and [day-of guide](WORKFLOW_TEMPLATE.md) hold the detailed prompts.
 
 ## 00:00–00:10 — Understand
 

@@ -1,6 +1,6 @@
 # Global view — Kate 3.0 rehearsal ideas
 
-Working hypotheses for the KBC track, 27 September 2026. The challenge is still hidden. These are discussion prompts, not predictions, selected solutions, or tasks to build before the event. Use the actual brief and judging criteria to choose or discard them. KBC source leads and the ten innovation lenses are collected below; [WORKFLOW_TEMPLATE.md](../WORKFLOW_TEMPLATE.md) is the day-of decision board.
+Working hypotheses for the KBC track, 27 September 2026. The challenge is still hidden. These are discussion prompts, not predictions, selected solutions, or tasks to build before the event. Use the actual brief and judging criteria to choose or discard them. KBC source leads and the ten innovation lenses are collected below; [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md) is the day-of decision board.
 
 ## What would feel like a capability leap?
 
@@ -79,7 +79,7 @@ These are ways to generate and assess ideas, not ten separate features to build.
 
 ## Challenge-decomposition method
 
-Use [WORKFLOW_TEMPLATE.md](../WORKFLOW_TEMPLATE.md) as the fillable decision board once the brief arrives. The ideas above can prompt discussion if relevant, but none is a preselected solution.
+Use [WORKFLOW_TEMPLATE.md](WORKFLOW_TEMPLATE.md) as the fillable decision board once the brief arrives. The ideas above can prompt discussion if relevant, but none is a preselected solution.
 
 1. Pick one customer situation and one measurable problem. Write it without naming a technology.
 2. Generate several ideas by combining two or three lenses. For each idea, describe the sequence: **trigger → context/evidence → options → customer-approved action → verification**.
