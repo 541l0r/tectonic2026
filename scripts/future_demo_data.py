@@ -1,12 +1,11 @@
 """Reproducible synthetic fixtures in Damiens's existing SQL structure.
 
-Print SQL with --sql; otherwise run the three fixtures through the algorithm.
+Print SQL with --sql; otherwise require --customer-id and return ONE customer.
 --database reads the local Compose database instead. No database or file writes
 are performed by this script.
 """
 
 import argparse
-from collections import Counter
 from datetime import date
 from decimal import Decimal
 import json
@@ -145,8 +144,16 @@ def seed_sql():
     return "\n\n".join(statements) + "\n"
 
 
-def read_local_database():
-    """Read only the three demo customers from the local Compose database."""
+def _check_demo_customer(customer_id):
+    if type(customer_id) is not int or customer_id not in (1001, 1002, 1003):
+        raise ValueError('Unknown demo customer; choose 1001, 1002 or 1003')
+
+
+def read_local_database(customer_id):
+    """Require a selected customer and scope both database queries to that ID."""
+    _check_demo_customer(customer_id)
+    # Interpolation is limited to the validated integer demo allowlist above.
+    scope = f'= {customer_id}'
     def query(sql):
         process = subprocess.run(
             ["docker", "compose", "exec", "-T", "-e", "MYSQL_PWD=app", "mysql",
@@ -156,38 +163,45 @@ def read_local_database():
         )
         return [json.loads(line, parse_float=Decimal) for line in process.stdout.splitlines() if line]
 
-    customers = query("""
+    customers = query(f"""
         SELECT JSON_OBJECT('customer_id', customer_id, 'name', name,
           'current_balance', current_balance, 'safety_buffer', safety_buffer)
-        FROM customers WHERE customer_id IN (1001,1002,1003) ORDER BY customer_id;
+        FROM customers WHERE customer_id {scope} ORDER BY customer_id;
     """)
-    transactions = query("""
+    transactions = query(f"""
         SELECT JSON_OBJECT('transaction_id', transaction_id, 'customer_id', customer_id,
           'product_id', product_id, 'transaction_date', transaction_date, 'amount', amount,
           'merchant', merchant, 'merchant_category', merchant_category, 'payment_method', payment_method)
-        FROM transactions WHERE customer_id IN (1001,1002,1003)
+        FROM transactions WHERE customer_id {scope}
           AND transaction_date < '2026-10-01'
         ORDER BY customer_id, transaction_date, transaction_id;
     """)
-    if len(customers) != 3:
-        raise ValueError("Local database must contain all three demo customers")
+    if len(customers) != 1:
+        raise ValueError("Requested demo customer data is missing from the local database")
     return customers, transactions
 
 
-def run_demo(database=False):
-    customers, transactions = read_local_database() if database else build_data()
-    counts = Counter(row["customer_id"] for row in transactions)
-    output = []
-    for customer in customers:
-        rows = [row for row in transactions if row["customer_id"] == customer["customer_id"]]
-        result = future(customer, rows, AS_OF)
-        output.append(dict(customer=customer, transaction_count=counts[customer["customer_id"]], result=result))
-    return output
+def run_demo(customer_id, database=False):
+    _check_demo_customer(customer_id)
+    customers, transactions = read_local_database(customer_id) if database else build_data()
+    customer = next(customer for customer in customers if customer['customer_id'] == customer_id)
+    rows = [row for row in transactions if row['customer_id'] == customer_id]
+    result = future(customer, rows, AS_OF)
+    return dict(customer=customer, transaction_count=len(rows), result=result)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--sql", action="store_true", help="Print the seed for the existing schema")
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--sql", action="store_true", help="Print the full development seed for the existing schema")
     parser.add_argument("--database", action="store_true", help="Read the mocks from local Compose MySQL")
+    mode.add_argument("--customer-id", type=int, choices=(1001, 1002, 1003),
+                      help="Required for a forecast: return only this customer")
     args = parser.parse_args()
-    print(seed_sql() if args.sql else json.dumps(run_demo(args.database), default=str, indent=2))
+    if args.sql:
+        if args.customer_id is not None or args.database:
+            parser.error('--sql cannot be combined with --database or --customer-id')
+        print(seed_sql())
+    else:
+        result = run_demo(args.customer_id, database=args.database)
+        print(json.dumps(result, default=str, indent=2))

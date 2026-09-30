@@ -405,11 +405,33 @@ def update_forecast_learning(customer_id, predicted_variable_spend, actual_varia
                 last_daily_error=round(daily_error, 4))
 
 
+def filter_customer_transactions(customer_id, transactions):
+    """Enforce single-customer input before calculation or explanation.
+
+    The caller must still enforce authorization and filter the database query.
+    Missing ownership must not silently be treated as the selected customer's.
+    """
+    if type(customer_id) is not int or customer_id <= 0:
+        raise ValueError('customer_id must be a positive integer')
+    selected = []
+    for row in transactions:
+        owner = row.get('customer_id')
+        if type(owner) is not int or owner <= 0:
+            raise ValueError('Every transaction must include a positive integer customer_id')
+        if owner != customer_id:
+            raise ValueError('Transactions must all belong to the selected customer; mixed input is not allowed')
+        selected.append(row)
+    return selected
+
+
 def future(customer: dict[str, Any], transactions: list[dict[str, Any]], as_of: date,
            horizon_days: int = 30, learning_state=None, preferences=None, proposal=None) -> dict[str, Any]:
     """Standalone tool; caller supplies history, snapshot and optional learned state."""
     if type(horizon_days) is not int or not 1 <= horizon_days <= 90:
         raise ValueError('horizon_days must be between 1 and 90')
+    if not isinstance(customer, dict):
+        raise ValueError('Provide exactly one customer object')
+    transactions = filter_customer_transactions(customer.get('customer_id'), transactions)
     as_of = _as_date(as_of)
     balance = _money(customer['current_balance'])
     safety_buffer = _money(customer['safety_buffer'])

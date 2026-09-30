@@ -30,6 +30,7 @@ class KbcFutureEngineTests(unittest.TestCase):
     def transaction(identifier, month, day, amount, merchant, category, method):
         return {
             "transaction_id": identifier,
+            "customer_id": 1,
             "transaction_date": f"2026-{month:02d}-{day:02d}T12:00:00",
             "amount": amount,
             "merchant": merchant,

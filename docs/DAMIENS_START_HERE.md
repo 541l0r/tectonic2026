@@ -23,7 +23,7 @@ database may still need a migration from `client_product_link`.
 To check the data and algorithm together without any API work:
 
 ```bash
-python3 scripts/future_demo_data.py --database
+python3 scripts/future_demo_data.py --database --customer-id 1001
 ```
 
 ## 2 Connect one endpoint to the calculation
@@ -44,7 +44,7 @@ WHERE c.customer_id = :customer_id;
 Then read that customer's history:
 
 ```sql
-SELECT transaction_id, transaction_date, amount, merchant,
+SELECT transaction_id, customer_id, transaction_date, amount, merchant,
        merchant_category, payment_method
 FROM transactions
 WHERE customer_id = :customer_id AND transaction_date < :history_end
@@ -55,6 +55,13 @@ For the frozen demo, bind `history_end` to **2026-10-01 00:00:00**. Balances are
 snapshots at the close of **2026-09-30**; do not silently use today's date.
 Validate customer ID, reject missing/non-consenting customers, and use the
 authorized customer identity in any real session.
+
+Every transaction must now include `customer_id`. Filter to the authorized customer
+in SQL before calling `future()`. The engine rejects mixed-customer input and rows
+without ownership before doing any calculation. It accepts exactly one customer object. The demo
+also requires `--customer-id` and returns one object, never all customer results.
+This is defense in depth: the endpoint must still authorize the selected customer
+and filter the SQL query. Do not trust an arbitrary client-supplied ID as permission.
 
 ```python
 from datetime import date

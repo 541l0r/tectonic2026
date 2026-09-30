@@ -2,7 +2,7 @@
 
 **Purpose.** Predict cash-flow pressure and suggest practical action: reduce flexible spending when a gap is forecast, or consider building savings when there is room.
 
-**Main tool.** `future(customer, transactions, as_of, horizon_days=30, learning_state=None, preferences=None, proposal=None)`. The backend supplies the customer's balance, buffer and transaction history. Categories come from transaction enrichment. The engine returns the forecast, recommendation and calculation limits.
+**Main tool.** `future(customer, transactions, as_of, horizon_days=30, learning_state=None, preferences=None, proposal=None)`. Each call accepts exactly one customer and their transactions and returns one result. The backend authorizes that customer and filters the query; the engine rejects mixed-customer history or missing ownership. Categories come from transaction enrichment.
 
 | Stage | What the engine does |
 | --- | --- |
@@ -21,4 +21,4 @@
 
 **MVP scope.** The engine calculates and validates recommendations; the LLM explains and adapts proposals for customer approval and feedback. Savings and reductions are estimates, not guarantees. Reductions assume even daily savings from tomorrow; savings proposals simulate one allocation, not a recurring transfer. There is no calibrated uncertainty band, and the MVP executes no financial transactions.
 
-**Verification.** 18 algorithm tests and five shared-data checks pass. Run `python3 -m unittest discover -s backend -p 'test_future_engine.py'` and `python3 -m unittest discover -s scripts -p 'test_future_demo_data.py'`. Read the actual local database with `python3 scripts/future_demo_data.py --database`.
+**Verification.** Run `python3 -m unittest discover -s backend -p 'test_future_engine.py'` and `python3 -m unittest discover -s scripts -p 'test_future_demo_data.py'`. Read one customer from the local database with `python3 scripts/future_demo_data.py --database --customer-id 1001`. Omitting the ID fails; no group forecast is available.

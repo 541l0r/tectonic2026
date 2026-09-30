@@ -2,6 +2,9 @@
 
 from datetime import date
 from pathlib import Path
+import json
+import subprocess
+import sys
 import unittest
 
 from future_demo_data import AS_OF, START, build_data, run_demo, seed_sql
@@ -31,7 +34,7 @@ class DemoDataTests(unittest.TestCase):
                 self.assertTrue(any(row['amount'] > 0 for row in monthly))
 
     def test_three_intended_outcomes(self):
-        demos = run_demo()
+        demos = [run_demo(customer_id=customer_id) for customer_id in (1001, 1002, 1003)]
         self.assertEqual([demo['result']['recommendation']['status'] for demo in demos],
                          ['support_available', 'savings_opportunity', 'review_needed'])
         self.assertEqual(demos[0]['result']['risk']['gap_amount'], 66.0)
@@ -71,6 +74,62 @@ class DemoDataTests(unittest.TestCase):
         opted_out = future(customers[1], rows, AS_OF, preferences={'suggest_savings': False},
                            proposal={'type': 'savings', 'amount': 500})['recommendation']
         self.assertFalse(opted_out['proposal_validated'])
+
+    def test_mixed_customer_input_is_rejected_before_forecasting(self):
+        customers, transactions = build_data()
+        for customer in customers:
+            with self.subTest(customer=customer['customer_id']):
+                own_rows = [row for row in transactions if row['customer_id'] == customer['customer_id']]
+                self.assertEqual(future(customer, own_rows, AS_OF)['customer_id'], customer['customer_id'])
+                with self.assertRaisesRegex(ValueError, 'mixed input is not allowed'):
+                    future(customer, transactions, AS_OF)
+
+    def test_single_customer_demo_returns_only_selected_customer(self):
+        for customer_id in (1001, 1002, 1003):
+            demo = run_demo(customer_id=customer_id)
+            self.assertIsInstance(demo, dict)
+            self.assertEqual(demo['result']['customer_id'], customer_id)
+            self.assertEqual(demo['customer']['customer_id'], customer_id)
+        with self.assertRaises(ValueError):
+            run_demo(customer_id=9999)
+
+    def test_transactions_without_ownership_fail_explicitly(self):
+        customers, transactions = build_data()
+        row = dict(transactions[0])
+        del row['customer_id']
+        with self.assertRaisesRegex(ValueError, 'Every transaction must include'):
+            future(customers[0], [row], AS_OF)
+
+    def test_customer_ids_are_not_coerced_or_guessed(self):
+        customers, transactions = build_data()
+        for invalid in (None, True, '1001', 1001.0):
+            with self.subTest(customer_id=invalid), self.assertRaises(ValueError):
+                future({**customers[0], 'customer_id': invalid}, transactions, AS_OF)
+
+    def test_foreign_only_history_is_not_silently_treated_as_empty(self):
+        customers, transactions = build_data()
+        others = [row for row in transactions if row['customer_id'] != customers[0]['customer_id']]
+        with self.assertRaisesRegex(ValueError, 'must all belong'):
+            future(customers[0], others, AS_OF)
+
+    def test_customer_group_is_rejected(self):
+        customers, transactions = build_data()
+        with self.assertRaisesRegex(ValueError, 'exactly one customer object'):
+            future(customers, transactions, AS_OF)
+
+    def test_cli_requires_customer_and_emits_one_object(self):
+        script = str(Path(__file__).with_name('future_demo_data.py'))
+        missing = subprocess.run([sys.executable, script], capture_output=True, text=True)
+        self.assertNotEqual(missing.returncode, 0)
+        self.assertEqual(missing.stdout, '')
+        selected = subprocess.run([sys.executable, script, '--customer-id', '1001'],
+                                  capture_output=True, text=True, check=True)
+        result = json.loads(selected.stdout)
+        self.assertIsInstance(result, dict)
+        self.assertEqual(result['customer']['customer_id'], 1001)
+        self.assertEqual(result['result']['customer_id'], 1001)
+        self.assertNotIn('Sam Safe', selected.stdout)
+        self.assertNotIn('Robin Uncertain', selected.stdout)
 
 
 if __name__ == '__main__':

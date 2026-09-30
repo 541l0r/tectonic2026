@@ -128,11 +128,11 @@ shown, and verify that no financial action occurs without a separate authorized 
 ## Run and load
 
 ```bash
-# Run synthetic fixtures without a database.
-python3 scripts/future_demo_data.py
+# Run one synthetic customer without a database.
+python3 scripts/future_demo_data.py --customer-id 1001
 
-# Read the three personas from the local Compose database and run the engine.
-python3 scripts/future_demo_data.py --database
+# Read only the selected persona from the local Compose database.
+python3 scripts/future_demo_data.py --database --customer-id 1001
 
 # Checks.
 python3 -m unittest discover -s backend -p 'test_future_engine.py' -v
